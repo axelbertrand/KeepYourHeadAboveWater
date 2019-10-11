@@ -42,9 +42,12 @@ public class PlayerController : MonoBehaviour {
         int rayCount = 0;
         for (int i = 0; i < 3; i++) {
             RaycastHit2D hit = Physics2D.Raycast(ray, -Vector3.up, .12f, maskLayer);
-            Debug.DrawRay(ray, -.12f * Vector2.up, Color.red);
-            if(hit.collider != null)
+            if(hit.collider != null) {
                 rayCount++;
+                Debug.DrawRay(ray, -.12f * Vector2.up, Color.red);
+            } else {
+                Debug.DrawRay(ray, -.12f * Vector2.up, Color.blue);
+            }
             ray += offset;
         }
 
