@@ -16,13 +16,13 @@ TagManager:
   - Player
   - Grid
   - OneWayPlatform
+  - Trigger
   - 
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - Hook
+  - PlayerHitbox
   - 
   - 
   - 
