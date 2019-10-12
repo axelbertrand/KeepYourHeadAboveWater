@@ -17,6 +17,9 @@ public class PlayerController2 : MonoBehaviour
     public float inAirDamping = 5f;
     public float jumpHeight = 3f;
 
+    public int playerId;
+    public Item item;
+
     [HideInInspector]
     private float normalizedHorizontalSpeed = 0;
 
@@ -75,6 +78,17 @@ public class PlayerController2 : MonoBehaviour
     void onTriggerEnterEvent(Collider2D col)
     {
         Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
+        Item i = col.GetComponent<Item>();
+        if (i && (!item || !item.locked)) {
+            if (item) {
+                Destroy(item.gameObject);
+            }
+            item = i;
+            col.transform.parent = transform;
+            col.transform.localPosition = new Vector3(0, 0, -0.1f);
+            col.transform.localScale = new Vector3(1, 1, 1);
+            col.enabled = false;
+        }
     }
 
 
@@ -98,7 +112,7 @@ public class PlayerController2 : MonoBehaviour
     }
 
     // the Update loop contains a very simple example of moving the character around and controlling the animation
-    void Update()
+    void FixedUpdate()
     {
         if (_controller.isGrounded)
             _velocity.y = 0;
@@ -124,7 +138,7 @@ public class PlayerController2 : MonoBehaviour
 
                 if (_controller.isGrounded)
                     _animator.Play(Animator.StringToHash("Run"));
-            }  
+            }
         }
         else
         {
@@ -145,7 +159,7 @@ public class PlayerController2 : MonoBehaviour
 
         // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
-        _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
+        _velocity.x = Mathf.Lerp(_velocity.x, dir * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
         // apply gravity before moving
         _velocity.y += gravity * Time.deltaTime;
@@ -155,7 +169,7 @@ public class PlayerController2 : MonoBehaviour
 
         if (canMove && _controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
         {
-            _velocity.y *= 3f;
+            _velocity.y -= 5f;
             _controller.ignoreOneWayPlatformsThisFrame = true;
         }
 
@@ -163,5 +177,8 @@ public class PlayerController2 : MonoBehaviour
 
         // grab our current _velocity to use as a base for all calculations
         _velocity = _controller.velocity;
+
+        if (_player.GetButtonDown("Item") && item)
+            item.Use(this);
     }
 }
