@@ -136,16 +136,21 @@ public class PlayerController2 : MonoBehaviour
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
         // apply gravity before moving
-        _velocity.y += gravity * Time.deltaTime;
-        
-        if (_isUpInWater)
+        if(_isDownInWater)
         {
-            _velocity.y += (-gravity + floatingDelta*5) * Time.deltaTime;
-            Debug.Log("Partially IN WATER");
+            if (_velocity.y < 0)
+            {
+                _velocity.y = _velocity.y * 0.95f;
+            }
+            if (_isUpInWater)
+            {
+                _velocity.y += floatingDelta;
+                Debug.Log("GOING UP");
+            }
         }
-        else if (_isDownInWater)
+        else
         {
-            _velocity.y += (-gravity + floatingDelta) * Time.deltaTime;
+            _velocity.y += gravity * Time.deltaTime;
         }
 
         
