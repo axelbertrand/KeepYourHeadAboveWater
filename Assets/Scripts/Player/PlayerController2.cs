@@ -13,11 +13,15 @@ public class PlayerController2 : MonoBehaviour
     public float inAirDamping = 5f;
     public float jumpHeight = 3f;
 
+    public int playerId;
+    public Item item;
+
     [HideInInspector]
     private float normalizedHorizontalSpeed = 0;
 
     private CharacterController2D _controller;
     private Animator _animator;
+    private Player _player;
     private RaycastHit2D _lastControllerColliderHit;
     private Vector3 _velocity;
 
@@ -31,6 +35,7 @@ public class PlayerController2 : MonoBehaviour
         _controller.onControllerCollidedEvent += onControllerCollider;
         _controller.onTriggerEnterEvent += onTriggerEnterEvent;
         _controller.onTriggerExitEvent += onTriggerExitEvent;
+        _player = ReInput.players.GetPlayer(playerId);
     }
 
 
@@ -50,6 +55,17 @@ public class PlayerController2 : MonoBehaviour
     void onTriggerEnterEvent(Collider2D col)
     {
         Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
+        Item i = col.GetComponent<Item>();
+        if (i && (!item || !item.locked)) {
+            if (item) {
+                Destroy(item.gameObject);
+            }
+            item = i;
+            col.transform.parent = transform;
+            col.transform.localPosition = new Vector3(0, 0, -0.1f);
+            col.transform.localScale = new Vector3(1, 1, 1);
+            col.enabled = false;
+        }
     }
 
 
@@ -62,32 +78,19 @@ public class PlayerController2 : MonoBehaviour
 
 
     // the Update loop contains a very simple example of moving the character around and controlling the animation
-    void Update()
+    void FixedUpdate()
     {
         if (_controller.isGrounded)
             _velocity.y = 0;
 
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            normalizedHorizontalSpeed = 1;
-            if (transform.localScale.x < 0f)
+        float dir = _player.GetAxis("Move");
+        if (dir != 0) {
+            if ((transform.localScale.x > 0) != (dir > 0))
                 transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
             if (_controller.isGrounded)
                 _animator.Play(Animator.StringToHash("Run"));
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            normalizedHorizontalSpeed = -1;
-            if (transform.localScale.x > 0f)
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-
-            if (_controller.isGrounded)
-                _animator.Play(Animator.StringToHash("Run"));
-        }
-        else
-        {
-            normalizedHorizontalSpeed = 0;
+        } else {
 
             if (_controller.isGrounded)
                 _animator.Play(Animator.StringToHash("Idle"));
@@ -95,7 +98,7 @@ public class PlayerController2 : MonoBehaviour
 
 
         // we can only jump whilst grounded
-        if (_controller.isGrounded && Input.GetKeyDown(KeyCode.UpArrow))
+        if (_controller.isGrounded && _player.GetButtonDown("Jump") || (item && item.type == Item.ItemType.Jetpack && item.locked))
         {
             _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             _animator.Play(Animator.StringToHash("Jump"));
@@ -104,16 +107,16 @@ public class PlayerController2 : MonoBehaviour
 
         // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
-        _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
+        _velocity.x = Mathf.Lerp(_velocity.x, dir * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
         // apply gravity before moving
         _velocity.y += gravity * Time.deltaTime;
 
         // if holding down bump up our movement amount and turn off one way platform detection for a frame.
         // this lets us jump down through one way platforms
-        if (_controller.isGrounded && Input.GetKey(KeyCode.DownArrow))
+        if (_controller.isGrounded && _player.GetButton("Drop"))
         {
-            _velocity.y *= 3f;
+            _velocity.y -= 5f;
             _controller.ignoreOneWayPlatformsThisFrame = true;
         }
 
@@ -121,5 +124,8 @@ public class PlayerController2 : MonoBehaviour
 
         // grab our current _velocity to use as a base for all calculations
         _velocity = _controller.velocity;
+
+        if (_player.GetButton("Item") && item)
+            item.Use(this);
     }
 }
