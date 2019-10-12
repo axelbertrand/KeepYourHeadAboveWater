@@ -98,7 +98,7 @@ public class PlayerController2 : MonoBehaviour
 
 
         // we can only jump whilst grounded
-        if (_controller.isGrounded && _player.GetButtonDown("Jump") || (item && item.type == Item.ItemType.Jetpack && item.locked))
+        if (_controller.isGrounded && _player.GetButtonDown("Jump"))
         {
             _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             _animator.Play(Animator.StringToHash("Jump"));
@@ -125,7 +125,7 @@ public class PlayerController2 : MonoBehaviour
         // grab our current _velocity to use as a base for all calculations
         _velocity = _controller.velocity;
 
-        if (_player.GetButton("Item") && item)
+        if (_player.GetButtonDown("Item") && item)
             item.Use(this);
     }
 }
