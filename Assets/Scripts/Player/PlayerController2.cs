@@ -5,7 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController2 : MonoBehaviour
-{
+{ 
+
+
+    public int playerInputId = 0;
+
     // movement config
     public float gravity = -25f;
 
@@ -13,6 +17,9 @@ public class PlayerController2 : MonoBehaviour
     public float groundDamping = 20f; // how fast do we change direction? higher means faster
     public float inAirDamping = 5f;
     public float jumpHeight = 3f;
+
+    public int playerId;
+    public Item item;
 
     [HideInInspector]
     private float normalizedHorizontalSpeed = 0;
@@ -23,8 +30,53 @@ public class PlayerController2 : MonoBehaviour
     private Vector3 _velocity;
     private bool isClimbing;
 
-    [SerializeField]
-    private LayerMask whatIsLadder;
+    private float defaultGravity;
+
+    private PlayerState playerState;
+
+    private bool isGravity = true;
+
+    public enum PlayerState
+    {
+        Default,
+        DontMove,
+        Ladder,
+        InWater,
+        Hooked
+    }
+
+
+    public void SetPlayerState(PlayerState value)
+    {
+
+        switch (value)
+        {
+            case PlayerState.Default:
+                isGravity = true;
+                break;
+
+            case PlayerState.DontMove:
+                _velocity = Vector3.zero;
+                break;
+
+            case PlayerState.Hooked:
+                isGravity = false;
+                _velocity = Vector3.zero;
+                break;
+            case PlayerState.InWater:
+                break;
+            case PlayerState.Ladder:
+                isGravity = false;
+                _velocity = Vector3.zero;
+                break;
+
+        }
+
+
+        playerState = value;
+    }
+
+    private Player playerInput;
 
     private void Awake()
     {
@@ -35,23 +87,33 @@ public class PlayerController2 : MonoBehaviour
         _controller.onControllerCollidedEvent += onControllerCollider;
         _controller.onTriggerEnterEvent += onTriggerEnterEvent;
         _controller.onTriggerExitEvent += onTriggerExitEvent;
+
+        playerInput = ReInput.players.GetPlayer(playerInputId);
+
+        defaultGravity = gravity;
     }
 
     #region Event Listeners
 
     private void onControllerCollider(RaycastHit2D hit)
     {
-        // bail out on plain old ground hits cause they arent very interesting
-        if (hit.normal.y == 1f)
-            return;
-
-        // logs any collider hits if uncommented. it gets noisy so it is commented out for the demo
-        //Debug.Log( "flags: " + _controller.collisionState + ", hit.normal: " + hit.normal );
+        
     }
 
     private void onTriggerEnterEvent(Collider2D col)
     {
         Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
+        Item i = col.GetComponent<Item>();
+        if (i && (!item || !item.locked)) {
+            if (item) {
+                Destroy(item.gameObject);
+            }
+            item = i;
+            col.transform.parent = transform;
+            col.transform.localPosition = new Vector3(0, 0, -0.1f);
+            col.transform.localScale = new Vector3(1, 1, 1);
+            col.enabled = false;
+        }
     }
 
     private void onTriggerExitEvent(Collider2D col)
@@ -61,30 +123,70 @@ public class PlayerController2 : MonoBehaviour
 
     #endregion Event Listeners
 
-    // the Update loop contains a very simple example of moving the character around and controlling
-    // the animation
-    private void Update()
+    // the Update loop contains a very simple example of moving the character around and controlling the animation
+    void FixedUpdate()
     {
         if (_controller.isGrounded)
             _velocity.y = 0;
 
-        if (Input.GetKey(KeyCode.RightArrow))
+        switch (playerState)
         {
-            normalizedHorizontalSpeed = 1;
-            if (transform.localScale.x < 0f)
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            case PlayerState.Default:
+                ManageDefaultControl();
+                break;
 
-            if (_controller.isGrounded)
-                _animator.Play(Animator.StringToHash("Run"));
+            case PlayerState.DontMove:
+                break;
+
+            case PlayerState.Hooked:
+                break;
+            case PlayerState.InWater:
+                break;
+            case PlayerState.Ladder:
+                break;
+                
         }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            normalizedHorizontalSpeed = -1;
-            if (transform.localScale.x > 0f)
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
-            if (_controller.isGrounded)
-                _animator.Play(Animator.StringToHash("Run"));
+        if (isGravity)
+        {
+            // apply gravity before moving
+            _velocity.y += gravity * Time.deltaTime;
+        }
+
+        _controller.move(_velocity * Time.deltaTime);
+
+        // grab our current _velocity to use as a base for all calculations
+        _velocity = _controller.velocity;
+
+
+        if (playerInput.GetButtonDown("Item") && item)
+            item.Use(this);
+    }
+
+
+    private void ManageDefaultControl()
+    {
+        float xAxis = playerInput.GetAxisRaw("Move");
+        if (Mathf.Abs(xAxis) > 0.25)
+        {
+            if (xAxis > 0.25)
+            {
+                normalizedHorizontalSpeed = 1;
+                if (transform.localScale.x < 0f)
+                    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+                if (_controller.isGrounded)
+                    _animator.Play(Animator.StringToHash("Run"));
+            }
+            else if (xAxis < 0.25)
+            {
+                normalizedHorizontalSpeed = -1;
+                if (transform.localScale.x > 0f)
+                    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+                if (_controller.isGrounded)
+                    _animator.Play(Animator.StringToHash("Run"));
+            }
         }
         else
         {
@@ -95,7 +197,7 @@ public class PlayerController2 : MonoBehaviour
         }
 
         // we can only jump whilst grounded
-        if (_controller.isGrounded && Input.GetKeyDown(KeyCode.UpArrow) && !isClimbing)
+        if (_controller.isGrounded && playerInput.GetButtonDown("Jump"))
         {
             _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             _animator.Play(Animator.StringToHash("Jump"));
@@ -108,36 +210,13 @@ public class PlayerController2 : MonoBehaviour
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
-        if (hitInfo.collider != null && Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            isClimbing = true;
-        }
-        else if (hitInfo.collider == null || Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            isClimbing = false;
-        }
 
-        if (!isClimbing)
-        {
-            // apply gravity before moving when not on ladder
-            _velocity.y += gravity * Time.deltaTime;
+        // if holding down bump up our movement amount and turn off one way platform detection for a frame.
+        // this lets us jump down through one way platforms
 
-            // if holding down bump up our movement amount and turn off one way platform detection
-            // for a frame. this lets us jump down through one way platforms
-            if (_controller.isGrounded && Input.GetKey(KeyCode.DownArrow))
-            {
-                _velocity.y *= 3f;
-                _controller.ignoreOneWayPlatformsThisFrame = true;
-            }
-        }
-        else
+        if (_controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
         {
             //_velocity.y += 20 * Time.deltaTime;
         }
-
-        _controller.move(_velocity * Time.deltaTime);
-
-        // grab our current _velocity to use as a base for all calculations
-        _velocity = _controller.velocity;
     }
 }
