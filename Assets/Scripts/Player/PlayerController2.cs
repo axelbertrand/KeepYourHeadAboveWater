@@ -8,6 +8,7 @@ public class PlayerController2 : MonoBehaviour
 {
     // movement config
     public float gravity = -25f;
+
     public float runSpeed = 8f;
     public float groundDamping = 20f; // how fast do we change direction? higher means faster
     public float inAirDamping = 5f;
@@ -20,9 +21,12 @@ public class PlayerController2 : MonoBehaviour
     private Animator _animator;
     private RaycastHit2D _lastControllerColliderHit;
     private Vector3 _velocity;
+    private bool isClimbing;
 
+    [SerializeField]
+    private LayerMask whatIsLadder;
 
-    void Awake()
+    private void Awake()
     {
         _animator = GetComponent<Animator>();
         _controller = GetComponent<CharacterController2D>();
@@ -33,10 +37,9 @@ public class PlayerController2 : MonoBehaviour
         _controller.onTriggerExitEvent += onTriggerExitEvent;
     }
 
-
     #region Event Listeners
 
-    void onControllerCollider(RaycastHit2D hit)
+    private void onControllerCollider(RaycastHit2D hit)
     {
         // bail out on plain old ground hits cause they arent very interesting
         if (hit.normal.y == 1f)
@@ -46,23 +49,21 @@ public class PlayerController2 : MonoBehaviour
         //Debug.Log( "flags: " + _controller.collisionState + ", hit.normal: " + hit.normal );
     }
 
-
-    void onTriggerEnterEvent(Collider2D col)
+    private void onTriggerEnterEvent(Collider2D col)
     {
         Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
     }
 
-
-    void onTriggerExitEvent(Collider2D col)
+    private void onTriggerExitEvent(Collider2D col)
     {
         Debug.Log("onTriggerExitEvent: " + col.gameObject.name);
     }
 
-    #endregion
+    #endregion Event Listeners
 
-
-    // the Update loop contains a very simple example of moving the character around and controlling the animation
-    void Update()
+    // the Update loop contains a very simple example of moving the character around and controlling
+    // the animation
+    private void Update()
     {
         if (_controller.isGrounded)
             _velocity.y = 0;
@@ -93,28 +94,45 @@ public class PlayerController2 : MonoBehaviour
                 _animator.Play(Animator.StringToHash("Idle"));
         }
 
-
         // we can only jump whilst grounded
-        if (_controller.isGrounded && Input.GetKeyDown(KeyCode.UpArrow))
+        if (_controller.isGrounded && Input.GetKeyDown(KeyCode.UpArrow) && !isClimbing)
         {
             _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             _animator.Play(Animator.StringToHash("Jump"));
         }
 
+        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.up, 0.5f, whatIsLadder);
 
-        // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
+        // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or
+        // something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
-        // apply gravity before moving
-        _velocity.y += gravity * Time.deltaTime;
-
-        // if holding down bump up our movement amount and turn off one way platform detection for a frame.
-        // this lets us jump down through one way platforms
-        if (_controller.isGrounded && Input.GetKey(KeyCode.DownArrow))
+        if (hitInfo.collider != null && Input.GetKeyDown(KeyCode.UpArrow))
         {
-            _velocity.y *= 3f;
-            _controller.ignoreOneWayPlatformsThisFrame = true;
+            isClimbing = true;
+        }
+        else if (hitInfo.collider == null || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            isClimbing = false;
+        }
+
+        if (!isClimbing)
+        {
+            // apply gravity before moving when not on ladder
+            _velocity.y += gravity * Time.deltaTime;
+
+            // if holding down bump up our movement amount and turn off one way platform detection
+            // for a frame. this lets us jump down through one way platforms
+            if (_controller.isGrounded && Input.GetKey(KeyCode.DownArrow))
+            {
+                _velocity.y *= 3f;
+                _controller.ignoreOneWayPlatformsThisFrame = true;
+            }
+        }
+        else
+        {
+            //_velocity.y += 20 * Time.deltaTime;
         }
 
         _controller.move(_velocity * Time.deltaTime);

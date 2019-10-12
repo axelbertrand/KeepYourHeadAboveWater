@@ -496,6 +496,7 @@ namespace Prime31
 
                 DrawRay(ray, rayDirection * rayDistance, Color.red);
                 _raycastHit = Physics2D.Raycast(ray, rayDirection, rayDistance, mask);
+
                 if (_raycastHit)
                 {
                     // set our new deltaMovement and recalculate the rayDistance taking it into account
