@@ -4,18 +4,6 @@ using UnityEngine;
 
 public class MenuScripts : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void Quit()
     {
 #if UNITY_EDITOR
@@ -23,6 +11,11 @@ public class MenuScripts : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    public void StartGame()
+    {
+        SceneLoader.Instance.LoadScene("character");
     }
 
 }
