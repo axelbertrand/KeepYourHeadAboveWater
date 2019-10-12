@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Rewired;
 
 public class PlayerController : MonoBehaviour {
-    public InputManager inputs;
+    public int playerId = 0;
+    private Player player;
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer sprite;
@@ -21,17 +22,7 @@ public class PlayerController : MonoBehaviour {
     private void Awake() {
         //Time.timeScale = 0.1f;
         //Setup inputs
-        inputs = new InputManager();
-        inputs.Player.Attack.performed += Attack;
-        inputs.Player.Jump.performed += Jump;
-    }
-
-    private void OnEnable() {
-        inputs.Enable();
-    }
-
-    private void OnDisable(){
-        inputs.Disable();
+        player = ReInput.players.GetPlayer(playerId);
     }
 
     void Start() {
@@ -51,9 +42,12 @@ public class PlayerController : MonoBehaviour {
         int rayCount = 0;
         for (int i = 0; i < 3; i++) {
             RaycastHit2D hit = Physics2D.Raycast(ray, -Vector3.up, .12f, maskLayer);
-            Debug.DrawRay(ray, -.12f * Vector2.up, Color.red);
-            if(hit.collider != null)
+            if(hit.collider != null) {
                 rayCount++;
+                Debug.DrawRay(ray, -.12f * Vector2.up, Color.red);
+            } else {
+                Debug.DrawRay(ray, -.12f * Vector2.up, Color.blue);
+            }
             ray += offset;
         }
 
@@ -63,7 +57,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         //Running physics
-        float runDir = inputs.Player.Run.ReadValue<float>();
+        float runDir = player.GetAxis("move");
         AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer"));
         if (!info.IsName("attack")) {
             rb.velocity += runDir * runVelocity * (rayCount > 0 ? 1 : airControl) * Vector2.right;
@@ -84,15 +78,20 @@ public class PlayerController : MonoBehaviour {
         animator.SetBool("running", runDir != 0);
         animator.SetBool("onGround", rayCount > 0);
         animator.SetBool("falling", rb.velocity.y < -0.01f);
+
+        if (player.GetButtonDown("attack"))
+            Attack();
+        if (player.GetButtonDown("jump"))
+            Jump();
     }
 
     //Attack action
-    void Attack(InputAction.CallbackContext ctx) {
+    void Attack() {
         animator.SetTrigger("attack");
     }
 
     //Jump action
-    void Jump(InputAction.CallbackContext ctx) {
+    void Jump() {
         if (animator.GetBool("onGround")) {
             animator.SetTrigger("jump");
             rb.AddForce(new Vector2(0, jumpForce));
