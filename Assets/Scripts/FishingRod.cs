@@ -28,6 +28,7 @@ public class FishingRod : MonoBehaviour
     private Vector3 throwDirection = Vector3.zero;
 
     private HookBehavior hookBehavior;
+    private PlayerController playerController;
 
     private bool IsLookingForThrow
     {
@@ -40,11 +41,14 @@ public class FishingRod : MonoBehaviour
         {
             fishingDirection.SetActive(value);
             isLookingForThrow = value;
+
+            playerController.CanMove = !value;
         }
     }
 
     private void Awake()
     {
+        playerController = GetComponent<PlayerController>();
     }
 
     // Start is called before the first frame update

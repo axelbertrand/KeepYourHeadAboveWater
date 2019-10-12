@@ -48,7 +48,7 @@ public class HookBehavior : MonoBehaviour
         if (playerGameObject != null && Vector3.Distance(transform.position, playerGameObject.transform.position) > rodLength)
         {
             GoBackToPlayer();
-        } else if (playerGameObject != null && Vector3.Distance(transform.position, playerGameObject.transform.position) < 1)
+        } else if (playerGameObject != null && Vector3.Distance(transform.position, playerGameObject.transform.position) < 0.5)
         {
             playerGameObject.HookDestroyed();
             Destroy(gameObject);
