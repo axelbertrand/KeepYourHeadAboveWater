@@ -262,6 +262,8 @@ MonoBehaviour:
   groundDamping: 20
   inAirDamping: 5
   jumpHeight: 3
+  playerId: 0
+  item: {fileID: 0}
 --- !u!114 &408636730
 MonoBehaviour:
   m_ObjectHideFlags: 0

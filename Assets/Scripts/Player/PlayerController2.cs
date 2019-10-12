@@ -8,6 +8,7 @@ public class PlayerController2 : MonoBehaviour
 {
 
 
+
     public int playerInputId = 0;
 
     // movement config
@@ -119,7 +120,7 @@ public class PlayerController2 : MonoBehaviour
 
 
         float xAxis = playerInput.GetAxisRaw("Move");
-        if(canMove && Mathf.Abs(xAxis) > 0.25)
+        if (canMove && Mathf.Abs(xAxis) > 0.25)
         {
             if (xAxis > 0.25)
             {
@@ -159,7 +160,7 @@ public class PlayerController2 : MonoBehaviour
 
         // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
-        _velocity.x = Mathf.Lerp(_velocity.x, dir * runSpeed, Time.deltaTime * smoothedMovementFactor);
+        _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
         // apply gravity before moving
         _velocity.y += gravity * Time.deltaTime;
@@ -169,7 +170,7 @@ public class PlayerController2 : MonoBehaviour
 
         if (canMove && _controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
         {
-            _velocity.y -= 5f;
+            _velocity.y *= 3f;
             _controller.ignoreOneWayPlatformsThisFrame = true;
         }
 
@@ -178,7 +179,7 @@ public class PlayerController2 : MonoBehaviour
         // grab our current _velocity to use as a base for all calculations
         _velocity = _controller.velocity;
 
-        if (_player.GetButtonDown("Item") && item)
+        if (playerInput.GetButtonDown("Item") && item)
             item.Use(this);
     }
 }
