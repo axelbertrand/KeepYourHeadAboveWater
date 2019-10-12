@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class PlayerController2 : MonoBehaviour
 {
+
+
+    public int playerInputId = 0;
+
     // movement config
     public float gravity = -25f;
     public float runSpeed = 8f;
@@ -21,6 +25,22 @@ public class PlayerController2 : MonoBehaviour
     private RaycastHit2D _lastControllerColliderHit;
     private Vector3 _velocity;
 
+    private float defaultGravity;
+
+    private bool canMove = true;
+    public bool CanMove {
+        get
+        {
+            return canMove;
+        }
+
+        set
+        {
+            canMove = value;
+        }
+    }
+
+    private Player playerInput;
 
     void Awake()
     {
@@ -31,6 +51,11 @@ public class PlayerController2 : MonoBehaviour
         _controller.onControllerCollidedEvent += onControllerCollider;
         _controller.onTriggerEnterEvent += onTriggerEnterEvent;
         _controller.onTriggerExitEvent += onTriggerExitEvent;
+
+
+        playerInput = ReInput.players.GetPlayer(playerInputId);
+
+        defaultGravity = gravity;
     }
 
 
@@ -61,29 +86,45 @@ public class PlayerController2 : MonoBehaviour
     #endregion
 
 
+    public void ResetController()
+    {
+        canMove = true;
+        gravity = defaultGravity;
+    }
+
+    public void ResetVelocity()
+    {
+        _velocity = Vector3.zero;
+    }
+
     // the Update loop contains a very simple example of moving the character around and controlling the animation
     void Update()
     {
         if (_controller.isGrounded)
             _velocity.y = 0;
 
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            normalizedHorizontalSpeed = 1;
-            if (transform.localScale.x < 0f)
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
-            if (_controller.isGrounded)
-                _animator.Play(Animator.StringToHash("Run"));
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
+        float xAxis = playerInput.GetAxisRaw("Move");
+        if(canMove && Mathf.Abs(xAxis) > 0.25)
         {
-            normalizedHorizontalSpeed = -1;
-            if (transform.localScale.x > 0f)
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            if (xAxis > 0.25)
+            {
+                normalizedHorizontalSpeed = 1;
+                if (transform.localScale.x < 0f)
+                    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
-            if (_controller.isGrounded)
-                _animator.Play(Animator.StringToHash("Run"));
+                if (_controller.isGrounded)
+                    _animator.Play(Animator.StringToHash("Run"));
+            }
+            else if (xAxis < 0.25)
+            {
+                normalizedHorizontalSpeed = -1;
+                if (transform.localScale.x > 0f)
+                    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+                if (_controller.isGrounded)
+                    _animator.Play(Animator.StringToHash("Run"));
+            }  
         }
         else
         {
@@ -95,7 +136,7 @@ public class PlayerController2 : MonoBehaviour
 
 
         // we can only jump whilst grounded
-        if (_controller.isGrounded && Input.GetKeyDown(KeyCode.UpArrow))
+        if (canMove && _controller.isGrounded && playerInput.GetButtonDown("Jump"))
         {
             _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             _animator.Play(Animator.StringToHash("Jump"));
@@ -111,7 +152,8 @@ public class PlayerController2 : MonoBehaviour
 
         // if holding down bump up our movement amount and turn off one way platform detection for a frame.
         // this lets us jump down through one way platforms
-        if (_controller.isGrounded && Input.GetKey(KeyCode.DownArrow))
+
+        if (canMove && _controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
         {
             _velocity.y *= 3f;
             _controller.ignoreOneWayPlatformsThisFrame = true;
