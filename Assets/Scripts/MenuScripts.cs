@@ -1,13 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MenuScripts : MonoBehaviour
 {
-    public void LoadScene(int sceneIndex)
+    // Start is called before the first frame update
+    void Start()
     {
-        SceneManager.LoadScene(sceneIndex);
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 
     public void Quit()
@@ -18,4 +24,5 @@ public class MenuScripts : MonoBehaviour
         Application.Quit();
 #endif
     }
+
 }
