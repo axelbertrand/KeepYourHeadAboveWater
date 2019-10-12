@@ -16,10 +16,10 @@ public class EndGameTrigger : MonoBehaviour
         GameObject collided = collision.gameObject;
         if (collided.tag == "Player")
         {
-            print("Un joueur a gagné");
+            Debug.Log("Un joueur a gagné !");
             GameObject helicoptere = GameObject.Find("Helicoptere");
-            Sequence helicoptereSequence = DOTween.Sequence();
-            helicoptereSequence.Append(helicoptere.transform.DOMove(collided.transform.position, 1))
+            DOTween.Sequence()
+                .Append(helicoptere.transform.DOMove(collided.transform.position, 1))
                 .AppendInterval(1)
                 .Append(helicoptere.transform.DOMove(collided.transform.position + new Vector3(0, 10), 1));
         }
