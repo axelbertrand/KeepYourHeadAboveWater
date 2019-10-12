@@ -12,6 +12,11 @@ public class PlayerController2 : MonoBehaviour
     public float groundDamping = 20f; // how fast do we change direction? higher means faster
     public float inAirDamping = 5f;
     public float jumpHeight = 3f;
+    public float floatingDelta = 1.0f;
+
+    public LayerMask waterMask;
+    public GameObject HighPoint;
+    public GameObject DownPoint;
 
     [HideInInspector]
     private float normalizedHorizontalSpeed = 0;
@@ -20,7 +25,10 @@ public class PlayerController2 : MonoBehaviour
     private Animator _animator;
     private RaycastHit2D _lastControllerColliderHit;
     private Vector3 _velocity;
+    private CharacterLife characterLife_;
 
+    private bool _isUpInWater;
+    private bool _isDownInWater;
 
     void Awake()
     {
@@ -31,6 +39,8 @@ public class PlayerController2 : MonoBehaviour
         _controller.onControllerCollidedEvent += onControllerCollider;
         _controller.onTriggerEnterEvent += onTriggerEnterEvent;
         _controller.onTriggerExitEvent += onTriggerExitEvent;
+
+        characterLife_ = GetComponent<CharacterLife>();
     }
 
 
@@ -49,13 +59,13 @@ public class PlayerController2 : MonoBehaviour
 
     void onTriggerEnterEvent(Collider2D col)
     {
-        Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
+        //Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
     }
 
 
     void onTriggerExitEvent(Collider2D col)
     {
-        Debug.Log("onTriggerExitEvent: " + col.gameObject.name);
+        //Debug.Log("onTriggerExitEvent: " + col.gameObject.name);
     }
 
     #endregion
@@ -64,8 +74,27 @@ public class PlayerController2 : MonoBehaviour
     // the Update loop contains a very simple example of moving the character around and controlling the animation
     void Update()
     {
+        //Checking if player is partially in water or not
+        if (Physics2D.OverlapCircle(HighPoint.transform.position, 0.25f, waterMask) == null)
+        {
+            _isUpInWater = false;
+        }
+        else
+        {
+            _isUpInWater = true;
+        }
+
+        if (Physics2D.OverlapCircle(DownPoint.transform.position, 0.25f, waterMask) == null)
+        {
+            _isDownInWater = false;
+        }
+        else
+        {
+            _isDownInWater = true;
+        }
+
         if (_controller.isGrounded)
-            _velocity.y = 0;
+        _velocity.y = 0;
 
         if (Input.GetKey(KeyCode.RightArrow))
         {
@@ -108,7 +137,18 @@ public class PlayerController2 : MonoBehaviour
 
         // apply gravity before moving
         _velocity.y += gravity * Time.deltaTime;
+        
+        if (_isUpInWater)
+        {
+            _velocity.y += (-gravity + floatingDelta*5) * Time.deltaTime;
+            Debug.Log("Partially IN WATER");
+        }
+        else if (_isDownInWater)
+        {
+            _velocity.y += (-gravity + floatingDelta) * Time.deltaTime;
+        }
 
+        
         // if holding down bump up our movement amount and turn off one way platform detection for a frame.
         // this lets us jump down through one way platforms
         if (_controller.isGrounded && Input.GetKey(KeyCode.DownArrow))
