@@ -40,9 +40,7 @@ public class HookBehavior : MonoBehaviour
 
         if (parent.CompareTag("Player"))
         {
-            parent.gameObject.GetComponent<PlayerController2>().CanMove = false;
-            parent.gameObject.GetComponent<PlayerController2>().gravity = 0;
-            parent.gameObject.GetComponent<PlayerController2>().ResetVelocity();
+            parent.gameObject.GetComponent<PlayerController2>().SetPlayerState(PlayerController2.PlayerState.Hooked);
         }
 
         parent.transform.SetParent(transform);

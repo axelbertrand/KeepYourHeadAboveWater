@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController2 : MonoBehaviour
-{
-
+{ 
 
 
     public int playerInputId = 0;
@@ -31,17 +30,48 @@ public class PlayerController2 : MonoBehaviour
 
     private float defaultGravity;
 
-    private bool canMove = true;
-    public bool CanMove {
-        get
+    private PlayerState playerState;
+
+    private bool isGravity = true;
+
+    public enum PlayerState
+    {
+        Default,
+        DontMove,
+        Ladder,
+        InWater,
+        Hooked
+    }
+
+
+    public void SetPlayerState(PlayerState value)
+    {
+
+        switch (value)
         {
-            return canMove;
+            case PlayerState.Default:
+                isGravity = true;
+                break;
+
+            case PlayerState.DontMove:
+                _velocity = Vector3.zero;
+                break;
+
+            case PlayerState.Hooked:
+                isGravity = false;
+                _velocity = Vector3.zero;
+                break;
+            case PlayerState.InWater:
+                break;
+            case PlayerState.Ladder:
+                isGravity = false;
+                _velocity = Vector3.zero;
+                break;
+
         }
 
-        set
-        {
-            canMove = value;
-        }
+
+        playerState = value;
     }
 
     private Player playerInput;
@@ -56,7 +86,6 @@ public class PlayerController2 : MonoBehaviour
         _controller.onTriggerEnterEvent += onTriggerEnterEvent;
         _controller.onTriggerExitEvent += onTriggerExitEvent;
 
-
         playerInput = ReInput.players.GetPlayer(playerInputId);
 
         defaultGravity = gravity;
@@ -67,12 +96,7 @@ public class PlayerController2 : MonoBehaviour
 
     void onControllerCollider(RaycastHit2D hit)
     {
-        // bail out on plain old ground hits cause they arent very interesting
-        if (hit.normal.y == 1f)
-            return;
-
-        // logs any collider hits if uncommented. it gets noisy so it is commented out for the demo
-        //Debug.Log( "flags: " + _controller.collisionState + ", hit.normal: " + hit.normal );
+        
     }
 
 
@@ -100,27 +124,51 @@ public class PlayerController2 : MonoBehaviour
 
     #endregion
 
-
-    public void ResetController()
-    {
-        canMove = true;
-        gravity = defaultGravity;
-    }
-
-    public void ResetVelocity()
-    {
-        _velocity = Vector3.zero;
-    }
-
     // the Update loop contains a very simple example of moving the character around and controlling the animation
     void FixedUpdate()
     {
         if (_controller.isGrounded)
             _velocity.y = 0;
 
+        switch (playerState)
+        {
+            case PlayerState.Default:
+                ManageDefaultControl();
+                break;
 
+            case PlayerState.DontMove:
+                break;
+
+            case PlayerState.Hooked:
+                break;
+            case PlayerState.InWater:
+                break;
+            case PlayerState.Ladder:
+                break;
+                
+        }
+
+        if (isGravity)
+        {
+            // apply gravity before moving
+            _velocity.y += gravity * Time.deltaTime;
+        }
+
+        _controller.move(_velocity * Time.deltaTime);
+
+        // grab our current _velocity to use as a base for all calculations
+        _velocity = _controller.velocity;
+
+
+        if (playerInput.GetButtonDown("Item") && item)
+            item.Use(this);
+    }
+
+
+    private void ManageDefaultControl()
+    {
         float xAxis = playerInput.GetAxisRaw("Move");
-        if (canMove && Mathf.Abs(xAxis) > 0.25)
+        if (Mathf.Abs(xAxis) > 0.25)
         {
             if (xAxis > 0.25)
             {
@@ -151,7 +199,7 @@ public class PlayerController2 : MonoBehaviour
 
 
         // we can only jump whilst grounded
-        if (canMove && _controller.isGrounded && playerInput.GetButtonDown("Jump"))
+        if (_controller.isGrounded && playerInput.GetButtonDown("Jump"))
         {
             _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             _animator.Play(Animator.StringToHash("Jump"));
@@ -162,24 +210,14 @@ public class PlayerController2 : MonoBehaviour
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
-        // apply gravity before moving
-        _velocity.y += gravity * Time.deltaTime;
 
         // if holding down bump up our movement amount and turn off one way platform detection for a frame.
         // this lets us jump down through one way platforms
 
-        if (canMove && _controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
+        if (_controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
         {
             _velocity.y *= 3f;
             _controller.ignoreOneWayPlatformsThisFrame = true;
         }
-
-        _controller.move(_velocity * Time.deltaTime);
-
-        // grab our current _velocity to use as a base for all calculations
-        _velocity = _controller.velocity;
-
-        if (playerInput.GetButtonDown("Item") && item)
-            item.Use(this);
     }
 }

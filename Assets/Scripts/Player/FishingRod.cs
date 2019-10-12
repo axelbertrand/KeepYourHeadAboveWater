@@ -53,7 +53,7 @@ public class FishingRod : MonoBehaviour
     {
         if(hook == null && characterController.isGrounded && Physics2D.OverlapCircle(hookPosition.transform.position, 0.25f, whatIsGround) == null)
         {
-            playerController.CanMove = false;
+            playerController.SetPlayerState(PlayerController2.PlayerState.DontMove);
 
             GameObject newHook = Instantiate(hookPrefab, hookPosition.transform.position, new Quaternion());
             hook = newHook.GetComponent<HookBehavior>();
@@ -65,16 +65,16 @@ public class FishingRod : MonoBehaviour
     public void CancelFishingRod(GameObject hookedItem = null)
     {
 
-        playerController.CanMove = true;
+        playerController.SetPlayerState(PlayerController2.PlayerState.Default);
 
-        if(hookedItem != null)
+        if (hookedItem != null)
         {
             hookedItem.transform.SetParent(null, true);
 
             PlayerController2 hookedPlayer = hookedItem.GetComponent<PlayerController2>();
             if (hookedPlayer != null)
             {
-                hookedPlayer.ResetController();
+                hookedPlayer.SetPlayerState(PlayerController2.PlayerState.Default);
             }
         }
 
