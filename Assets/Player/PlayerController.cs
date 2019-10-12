@@ -19,6 +19,20 @@ public class PlayerController : MonoBehaviour {
     public float airControl = .5f;
     public int health = 5;
 
+    private bool canMove = false;
+    public bool CanMove
+    {
+        get
+        {
+            return canMove;
+        }
+
+        set
+        {
+            canMove = value;
+        }
+    }
+
     private void Awake() {
         //Time.timeScale = 0.1f;
         //Setup inputs
@@ -34,6 +48,12 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void FixedUpdate() {
+
+        if (!canMove)
+        {
+            return;
+        }
+
         //Raycast to detect if the player is on the ground
         Vector2 pos = transform.position;
         int maskLayer = ~(1 << LayerMask.NameToLayer("Player"));
