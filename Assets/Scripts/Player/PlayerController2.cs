@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController2 : MonoBehaviour
-{ 
-
-
+{
     public int playerInputId = 0;
 
     // movement config
@@ -28,7 +26,6 @@ public class PlayerController2 : MonoBehaviour
     private Animator _animator;
     private RaycastHit2D _lastControllerColliderHit;
     private Vector3 _velocity;
-    private bool isClimbing;
 
     private float defaultGravity;
 
@@ -45,10 +42,8 @@ public class PlayerController2 : MonoBehaviour
         Hooked
     }
 
-
     public void SetPlayerState(PlayerState value)
     {
-
         switch (value)
         {
             case PlayerState.Default:
@@ -63,15 +58,15 @@ public class PlayerController2 : MonoBehaviour
                 isGravity = false;
                 _velocity = Vector3.zero;
                 break;
+
             case PlayerState.InWater:
                 break;
+
             case PlayerState.Ladder:
                 isGravity = false;
                 _velocity = Vector3.zero;
                 break;
-
         }
-
 
         playerState = value;
     }
@@ -97,15 +92,16 @@ public class PlayerController2 : MonoBehaviour
 
     private void onControllerCollider(RaycastHit2D hit)
     {
-        
     }
 
     private void onTriggerEnterEvent(Collider2D col)
     {
         Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
         Item i = col.GetComponent<Item>();
-        if (i && (!item || !item.locked)) {
-            if (item) {
+        if (i && (!item || !item.locked))
+        {
+            if (item)
+            {
                 Destroy(item.gameObject);
             }
             item = i;
@@ -123,8 +119,9 @@ public class PlayerController2 : MonoBehaviour
 
     #endregion Event Listeners
 
-    // the Update loop contains a very simple example of moving the character around and controlling the animation
-    void FixedUpdate()
+    // the Update loop contains a very simple example of moving the character around and controlling
+    // the animation
+    private void FixedUpdate()
     {
         if (_controller.isGrounded)
             _velocity.y = 0;
@@ -140,11 +137,12 @@ public class PlayerController2 : MonoBehaviour
 
             case PlayerState.Hooked:
                 break;
+
             case PlayerState.InWater:
                 break;
+
             case PlayerState.Ladder:
                 break;
-                
         }
 
         if (isGravity)
@@ -158,11 +156,9 @@ public class PlayerController2 : MonoBehaviour
         // grab our current _velocity to use as a base for all calculations
         _velocity = _controller.velocity;
 
-
         if (playerInput.GetButtonDown("Item") && item)
             item.Use(this);
     }
-
 
     private void ManageDefaultControl()
     {
@@ -203,20 +199,18 @@ public class PlayerController2 : MonoBehaviour
             _animator.Play(Animator.StringToHash("Jump"));
         }
 
-        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.up, 0.5f, whatIsLadder);
-
         // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or
         // something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
-
-        // if holding down bump up our movement amount and turn off one way platform detection for a frame.
-        // this lets us jump down through one way platforms
+        // if holding down bump up our movement amount and turn off one way platform detection for a
+        // frame. this lets us jump down through one way platforms
 
         if (_controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
         {
-            //_velocity.y += 20 * Time.deltaTime;
+            _velocity.y *= 3f;
+            _controller.ignoreOneWayPlatformsThisFrame = true;
         }
     }
 }
