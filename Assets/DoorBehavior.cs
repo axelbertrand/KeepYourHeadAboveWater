@@ -5,7 +5,7 @@ using UnityEngine;
 public class DoorBehavior : MonoBehaviour
 {
     [SerializeField]
-    private bool isOpen;
+    private bool isOpen = false;
 
     private SpriteRenderer doorRenderer;
     private BoxCollider2D doorCollider;
@@ -17,6 +17,17 @@ public class DoorBehavior : MonoBehaviour
     {
         doorRenderer = GetComponent<SpriteRenderer>();
         doorCollider = GetComponent<BoxCollider2D>();
+        SetOpened();
+    }
+
+    public void ChangeState()
+    {
+        isOpen = !isOpen;
+        SetOpened();
+    }
+
+    public void SetOpened()
+    {
         if (isOpen)
         {
             doorCollider.enabled = false;
@@ -26,21 +37,6 @@ public class DoorBehavior : MonoBehaviour
         {
             doorCollider.enabled = true;
             doorRenderer.sprite = sprites[1];
-        }
-    }
-
-    public void ChangeState()
-    {
-        isOpen = !isOpen;
-        if (isOpen)
-        {
-            doorCollider.enabled = false;
-            doorRenderer.color = Color.grey;
-        }
-        else
-        {
-            doorCollider.enabled = true;
-            doorRenderer.color = Color.black;
         }
     }
 }
