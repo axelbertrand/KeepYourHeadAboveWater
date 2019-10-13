@@ -22,8 +22,6 @@ public class PlayerController2 : MonoBehaviour
     public GameObject HighPoint;
     public GameObject DownPoint;
 
-    public int playerId;
-
     [HideInInspector]
     private float normalizedHorizontalSpeed = 0;
 
@@ -87,6 +85,11 @@ public class PlayerController2 : MonoBehaviour
     private bool _isDownInWater;
 
     void Awake()
+    {
+        
+    }
+
+    private void Start()
     {
         _animator = GetComponent<Animator>();
         _controller = GetComponent<CharacterController2D>();
@@ -178,7 +181,7 @@ public class PlayerController2 : MonoBehaviour
                 if (_isUpInWater)
                 {
                     _velocity.y += floatingDelta;
-                    Debug.Log("GOING UP");
+                    //Debug.Log("GOING UP");
                 }
             }
             else
@@ -191,13 +194,15 @@ public class PlayerController2 : MonoBehaviour
 
         // grab our current _velocity to use as a base for all calculations
         _velocity = _controller.velocity;
+
+        UpdateAnimator();
     }
 
 
     public void Jump()
     {
         _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
-        _animator.Play(Animator.StringToHash("Jump"));
+        _animator.SetTrigger("isJumping");
     }
 
     private void ManageDefaultControl()
@@ -211,8 +216,6 @@ public class PlayerController2 : MonoBehaviour
                 if (transform.localScale.x < 0f)
                     transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
-                if (_controller.isGrounded)
-                    _animator.Play(Animator.StringToHash("Run"));
             }
             else if (xAxis < 0.25)
             {
@@ -220,16 +223,11 @@ public class PlayerController2 : MonoBehaviour
                 if (transform.localScale.x > 0f)
                     transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
-                if (_controller.isGrounded)
-                    _animator.Play(Animator.StringToHash("Run"));
             }
         }
         else
         {
-            normalizedHorizontalSpeed = 0;
-
-            if (_controller.isGrounded)
-                _animator.Play(Animator.StringToHash("Idle"));
+            normalizedHorizontalSpeed = 0; 
         }
 
 
@@ -254,5 +252,17 @@ public class PlayerController2 : MonoBehaviour
             _velocity.y *= 3f;
             _controller.ignoreOneWayPlatformsThisFrame = true;
         }
+
+       
+    }
+
+    private void UpdateAnimator()
+    {
+        _animator.SetBool("isGrounded", _controller.isGrounded);
+        _animator.SetBool("isWalking", _controller.isGrounded && _velocity.magnitude > 0.35);
+        _animator.SetBool("isInWater", _isUpInWater || _isDownInWater);
+        _animator.SetBool("isAlive", characterLife_.life_ > 0);
+        _animator.SetBool("isHooked", playerState == PlayerState.Hooked);
+
     }
 }
