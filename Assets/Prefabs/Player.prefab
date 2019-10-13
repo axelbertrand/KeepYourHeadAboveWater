@@ -30,6 +30,66 @@ Transform:
   m_Father: {fileID: 2604504702860926823}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1621155566
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1621155567}
+  m_Layer: 8
+  m_Name: HightEmergedPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1621155567
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621155566}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.37, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2604504702860926823}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1828163220
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1828163221}
+  m_Layer: 8
+  m_Name: DownEmergedPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1828163221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828163220}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.36, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2604504702860926823}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2604504702860926825
 GameObject:
   m_ObjectHideFlags: 0
@@ -46,6 +106,7 @@ GameObject:
   - component: {fileID: 2604504702860926816}
   - component: {fileID: 2604504702860926819}
   - component: {fileID: 408636730}
+  - component: {fileID: 1201565801}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -66,6 +127,8 @@ Transform:
   m_Children:
   - {fileID: 138824808}
   - {fileID: 4984238098813339053}
+  - {fileID: 1621155567}
+  - {fileID: 1828163221}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -104,11 +167,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1956691021
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3bbcc7922901e864a91fca98b00b83fc, type: 3}
-  m_Color: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
+  m_Color: {r: 1, g: 0.79263175, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -178,13 +241,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignoreOneWayPlatformsThisFrame: 0
-  _skinWidth: 0.04
+  _skinWidth: 0.02
   platformMask:
     serializedVersion: 2
     m_Bits: 1
   triggerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   oneWayPlatformMask:
     serializedVersion: 2
     m_Bits: 1024
@@ -224,7 +287,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   totalHorizontalRays: 8
-  totalVerticalRays: 5
+  totalVerticalRays: 4
 --- !u!95 &2604504702860926816
 Animator:
   serializedVersion: 3
@@ -262,6 +325,12 @@ MonoBehaviour:
   groundDamping: 20
   inAirDamping: 5
   jumpHeight: 3
+  floatingDelta: 1
+  waterMask:
+    serializedVersion: 2
+    m_Bits: 6144
+  HighPoint: {fileID: 1621155566}
+  DownPoint: {fileID: 1828163220}
   playerId: 0
   item: {fileID: 0}
 --- !u!114 &408636730
@@ -284,6 +353,20 @@ MonoBehaviour:
   cableSpeed: 1
   hookPrefab: {fileID: 8574064829375845512, guid: 1c7ba6b1921f08248a67874b09a8d50b,
     type: 3}
+--- !u!114 &1201565801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2604504702860926825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2261d7268cceb74a83dbe2e358491fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  life_: 20
+  isInWater: 0
 --- !u!1 &2995767980757954762
 GameObject:
   m_ObjectHideFlags: 0
