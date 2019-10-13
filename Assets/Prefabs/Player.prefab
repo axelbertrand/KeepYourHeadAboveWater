@@ -695,11 +695,11 @@ GameObject:
   - component: {fileID: 3418176351188421781}
   - component: {fileID: 3418176351188421782}
   - component: {fileID: 3418176351188421783}
-  - component: {fileID: 3418176351188421784}
   - component: {fileID: 3418176351188421785}
   - component: {fileID: 3418176351188421786}
   - component: {fileID: 3418176351188421787}
   - component: {fileID: 3418176351188421777}
+  - component: {fileID: 408636730}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -835,8 +835,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a9f9dec4f8880fc46874ac72713bebcb, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   ignoreOneWayPlatformsThisFrame: 0
   _skinWidth: 0.02
   platformMask:
@@ -900,7 +900,7 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
-  m_WarningMessage:
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
@@ -914,8 +914,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 94db050336b7f3d4fadbf3085afadabc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gamePlayerId: 0
   jumpClip: {fileID: 8300000, guid: abb8fa35499656d4099a94903ab2c1f8, type: 3}
   hookedClip: {fileID: 8300000, guid: 85821c5fbec51ed47b47d4f0c9afcbaa, type: 3}
   waterClip: {fileID: 8300000, guid: dda59f0268888b1438514d74f74c1fd8, type: 3}
@@ -929,28 +930,8 @@ MonoBehaviour:
   waterMask:
     serializedVersion: 2
     m_Bits: 4096
-  HighPoint: {fileID: 1621155566}
-  DownPoint: {fileID: 1828163220}
---- !u!114 &408636730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3418176351188421788}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b092f1e9933193748a1317f26244a888, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  hookPosition: {fileID: 3418176351208416491}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 1
-  cableLength: 15
-  cableSpeed: 1
-  hookPrefab: {fileID: 8574064829375845512, guid: 1c7ba6b1921f08248a67874b09a8d50b,
-    type: 3}
+  HighPoint: {fileID: 3418176350393216412}
+  DownPoint: {fileID: 3418176349870875780}
 --- !u!114 &3418176351188421785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -961,8 +942,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2261d7268cceb74a83dbe2e358491fa, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   audioSource: {fileID: 3418176351188421777}
   hurstClip: {fileID: 8300000, guid: ac9e68be0ada72d4db51bd931a35e9e4, type: 3}
   life_: 2
@@ -977,8 +958,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b64539464e4219740bb543ad03548771, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3418176351188421787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -989,8 +970,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fda0b5c1d77d7374992ed439fbe478ec, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   bodySpriteRenderer: {fileID: 3418176350363248919}
   headSpriteRenderer: {fileID: 3418176349279365443}
 --- !u!82 &3418176351188421777
@@ -1089,6 +1070,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &408636730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3418176351188421788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b092f1e9933193748a1317f26244a888, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hookPosition: {fileID: 3418176351208416491}
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 1
+  cableLength: 15
+  cableSpeed: 1
+  hookPrefab: {fileID: 8574064829375845512, guid: 1c7ba6b1921f08248a67874b09a8d50b,
+    type: 3}
 --- !u!1 &3418176351208416491
 GameObject:
   m_ObjectHideFlags: 0
