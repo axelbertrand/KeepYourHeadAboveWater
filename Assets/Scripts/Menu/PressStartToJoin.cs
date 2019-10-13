@@ -70,6 +70,27 @@ public class PressStartToJoin : MonoBehaviour
             return;
         }
 
+
+        bool found = false;
+        int index = 0;
+        for (; index < playerMap.Count; ++index)
+        {
+            if (playerMap[index].rewiredPlayerId == rewiredPlayerId)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            return;
+        }
+
+
+
+
+
         int gamePlayerId = GetNextGamePlayerId();
 
         // Add the Rewired Player as the next open game player slot
