@@ -73,14 +73,21 @@ public class CharacterLife : MonoBehaviour
 
     void onTriggerEnterEvent(Collider2D col)
     {
-        isInWater = true;
+        if (col.CompareTag("Water"))
+        {
+            isInWater = true;
+        }
+        
     }
 
 
     void onTriggerExitEvent(Collider2D col)
     {
-        isInWater = false;
-        time_left_ = 1;
+        if (col.CompareTag("Water"))
+        {
+            isInWater = false;
+            time_left_ = 1;
+        }
     }
 
 }

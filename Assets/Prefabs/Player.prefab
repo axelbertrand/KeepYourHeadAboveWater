@@ -700,6 +700,7 @@ GameObject:
   - component: {fileID: 3418176351188421787}
   - component: {fileID: 3418176351188421777}
   - component: {fileID: 408636730}
+  - component: {fileID: 826799456}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -848,7 +849,7 @@ MonoBehaviour:
   oneWayPlatformMask:
     serializedVersion: 2
     m_Bits: 1024
-  slopeLimit: 30
+  slopeLimit: 48
   jumpingThreshold: 0.07
   slopeSpeedMultiplier:
     serializedVersion: 2
@@ -925,7 +926,7 @@ MonoBehaviour:
   runSpeed: 8
   groundDamping: 20
   inAirDamping: 5
-  jumpHeight: 3
+  jumpHeight: 3.1
   floatingDelta: 1
   waterMask:
     serializedVersion: 2
@@ -1090,6 +1091,18 @@ MonoBehaviour:
   cableSpeed: 1
   hookPrefab: {fileID: 8574064829375845512, guid: 1c7ba6b1921f08248a67874b09a8d50b,
     type: 3}
+--- !u!114 &826799456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3418176351188421788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ec909e8692da194e8b97ce35ec5d7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3418176351208416491
 GameObject:
   m_ObjectHideFlags: 0
