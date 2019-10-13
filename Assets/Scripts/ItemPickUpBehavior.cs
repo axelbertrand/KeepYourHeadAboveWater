@@ -85,8 +85,6 @@ public class ItemPickUpBehavior : MonoBehaviour
 
     public void UseItem()
     {
-        Debug.Log("try to pick up");
-
         if (pickUpObject != null)
         {
             pickUpObject.Use(this);

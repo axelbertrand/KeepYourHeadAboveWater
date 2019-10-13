@@ -30,14 +30,21 @@ public class UseInteractiveObject : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (playerInput.GetButtonDown("InteractiveObject") && interactiveObject != null)
+        if (playerInput.GetButtonDown("InteractiveObject"))
         {
-            interactiveObject.UseObject();
+
+           
+            if (interactiveObject != null)
+            {
+                interactiveObject.UseObject();
+            }
         }
     }
 
     private void onTriggerEnterEvent(Collider2D col)
     {
+        Debug.Log("dqsdsqdsq" + col);
+
         if (col.GetComponent<InteractiveObject>() != null)
         {
             interactiveObject = col.GetComponent<InteractiveObject>();
