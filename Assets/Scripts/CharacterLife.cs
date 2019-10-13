@@ -5,6 +5,10 @@ using Prime31;
 
 public class CharacterLife : MonoBehaviour
 {
+    public AudioSource audioSource;
+    public AudioClip hurstClip;
+
+
     private CharacterController2D _controller;
 
     [SerializeField]
@@ -44,10 +48,16 @@ public class CharacterLife : MonoBehaviour
             if (time_left_ < 0)
             {
                 life_ -= DAMAGE_PER_TICK;
-               
+
                 if (life_ <= 0)
                 {
                     Destroy(gameObject);
+                }
+                else
+                {
+                    audioSource.volume = 0.4F;
+                    audioSource.clip = hurstClip;
+                    audioSource.PlayOneShot(hurstClip);
                 }
                 time_left_ = TICK_INTERVAL;
             }
@@ -63,14 +73,21 @@ public class CharacterLife : MonoBehaviour
 
     void onTriggerEnterEvent(Collider2D col)
     {
-        isInWater = true;
+        if (col.CompareTag("Water"))
+        {
+            isInWater = true;
+        }
+        
     }
 
 
     void onTriggerExitEvent(Collider2D col)
     {
-        isInWater = false;
-        time_left_ = 1;
+        if (col.CompareTag("Water"))
+        {
+            isInWater = false;
+            time_left_ = 1;
+        }
     }
 
 }

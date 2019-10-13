@@ -8,10 +8,19 @@ public class PlayerController2 : MonoBehaviour
 {
 
     public int gamePlayerId = 0;
+    // sounds
+    private AudioSource audioSource;
+    public AudioClip jumpClip;
+    public AudioClip hookedClip;
+    public AudioClip waterClip;
+
+
     public int playerInputId = 0;
+
 
     // movement config
     public float gravity = -25f;
+
     public float runSpeed = 8f;
     public float groundDamping = 20f; // how fast do we change direction? higher means faster
     public float inAirDamping = 5f;
@@ -42,13 +51,12 @@ public class PlayerController2 : MonoBehaviour
         Default,
         DontMove,
         Ladder,
-        Hooked
+        Hooked,
+        InWater
     }
-
 
     public void SetPlayerState(PlayerState value)
     {
-
         switch (value)
         {
             case PlayerState.Default:
@@ -61,16 +69,21 @@ public class PlayerController2 : MonoBehaviour
                 break;
 
             case PlayerState.Hooked:
+                audioSource.volume = 0.3F;
+                audioSource.clip = hookedClip;
+                audioSource.PlayOneShot(hookedClip);
                 isGravity = false;
                 _velocity = Vector3.zero;
                 break;
+
+            case PlayerState.InWater:
+                break;
+
             case PlayerState.Ladder:
                 isGravity = false;
                 _velocity = Vector3.zero;
                 break;
-
         }
-
 
         playerState = value;
     }
@@ -87,7 +100,7 @@ public class PlayerController2 : MonoBehaviour
 
     void Awake()
     {
-        
+
     }
 
     private void Start()
@@ -104,18 +117,17 @@ public class PlayerController2 : MonoBehaviour
         defaultGravity = gravity;
 
         characterLife_ = GetComponent<CharacterLife>();
-    }
 
+        audioSource = GetComponent<AudioSource>();
+    }
 
     #region Event Listeners
 
-    void onControllerCollider(RaycastHit2D hit)
+    private void onControllerCollider(RaycastHit2D hit)
     {
-
     }
 
-
-    void onTriggerEnterEvent(Collider2D col)
+    private void onTriggerEnterEvent(Collider2D col)
     {
         Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
         if(col.gameObject.name == "ray") {
@@ -136,7 +148,7 @@ public class PlayerController2 : MonoBehaviour
         //Debug.Log("onTriggerExitEvent: " + col.gameObject.name);
     }
 
-    #endregion
+    #endregion Event Listeners
 
     // the Update loop contains a very simple example of moving the character around and controlling the animation
     public void Update()
@@ -144,7 +156,21 @@ public class PlayerController2 : MonoBehaviour
         //Checking if player is partially in water or not
         _isUpInWater = (Physics2D.OverlapCircle(HighPoint.transform.position, 0.25f, waterMask) != null);
 
-        _isDownInWater = (Physics2D.OverlapCircle(DownPoint.transform.position, 0.25f, waterMask) != null);
+        if (Physics2D.OverlapCircle(DownPoint.transform.position, 0.25f, waterMask) == null)
+        {
+            _isDownInWater = false;
+        }
+        else
+        {
+            if(!_isDownInWater && _velocity.magnitude > 10)
+            {
+                audioSource.volume = 0.3F;
+                audioSource.clip = waterClip;
+                audioSource.PlayOneShot(waterClip);
+            }
+
+            _isDownInWater = true;
+        }
 
         if (_controller.isGrounded)
         _velocity.y = 0;
@@ -160,9 +186,12 @@ public class PlayerController2 : MonoBehaviour
 
             case PlayerState.Hooked:
                 break;
-            case PlayerState.Ladder:
+
+            case PlayerState.InWater:
                 break;
 
+            case PlayerState.Ladder:
+                break;
         }
 
         if (isGravity)
@@ -202,6 +231,10 @@ public class PlayerController2 : MonoBehaviour
     {
         _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
         _animator.SetTrigger("isJumping");
+
+        audioSource.volume = 0.3F;
+        audioSource.clip = jumpClip;
+        audioSource.PlayOneShot(jumpClip);
     }
 
     private void ManageDefaultControl()
@@ -226,9 +259,8 @@ public class PlayerController2 : MonoBehaviour
         }
         else
         {
-            normalizedHorizontalSpeed = 0; 
+            normalizedHorizontalSpeed = 0;
         }
-
 
         // we can only jump whilst grounded
         if ((_controller.isGrounded || (_isDownInWater && !_isUpInWater)) && playerInput.GetButtonDown("Jump"))
@@ -236,15 +268,13 @@ public class PlayerController2 : MonoBehaviour
             Jump();
         }
 
-
-        // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
+        // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or
+        // something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
-
-
-        // if holding down bump up our movement amount and turn off one way platform detection for a frame.
-        // this lets us jump down through one way platforms
+        // if holding down bump up our movement amount and turn off one way platform detection for a
+        // frame. this lets us jump down through one way platforms
 
         if (_controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
         {
@@ -252,7 +282,7 @@ public class PlayerController2 : MonoBehaviour
             _controller.ignoreOneWayPlatformsThisFrame = true;
         }
 
-       
+
     }
 
     private void UpdateAnimator()
