@@ -27397,6 +27397,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 1.2
       objectReference: {fileID: 0}
+    - target: {fileID: 6143767520588363259, guid: 81b1d7862fbc8fe4b9249dffcf7caedb,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6143767520422223639, guid: 81b1d7862fbc8fe4b9249dffcf7caedb,
         type: 3}
       propertyPath: m_SortingOrder
@@ -27406,11 +27411,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingOrder
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6143767520588363259, guid: 81b1d7862fbc8fe4b9249dffcf7caedb,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81b1d7862fbc8fe4b9249dffcf7caedb, type: 3}
@@ -27607,6 +27607,12 @@ Transform:
   m_Father: {fileID: 1338486195}
   m_RootOrder: 31
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &718260545 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3418176350935889020, guid: 7b4d71465b092a141af9c875e4c758ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 260496096}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &727054898
 GameObject:
   m_ObjectHideFlags: 0
@@ -29620,6 +29626,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 1.2
       objectReference: {fileID: 0}
+    - target: {fileID: 6143767520588363259, guid: 81b1d7862fbc8fe4b9249dffcf7caedb,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6143767520422223639, guid: 81b1d7862fbc8fe4b9249dffcf7caedb,
         type: 3}
       propertyPath: m_SortingOrder
@@ -29629,11 +29640,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingOrder
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6143767520588363259, guid: 81b1d7862fbc8fe4b9249dffcf7caedb,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81b1d7862fbc8fe4b9249dffcf7caedb, type: 3}
@@ -29781,7 +29787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007f9d44dd9515944bf26b161d0ef5e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 718260545}
   offset: {x: 0, y: 0, z: -10}
 --- !u!81 &1794195080
 AudioListener:
