@@ -118,7 +118,16 @@ public class PlayerController2 : MonoBehaviour
     void onTriggerEnterEvent(Collider2D col)
     {
         Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
+        if(col.gameObject.name == "ray") {
+            StartCoroutine(paralize());
+        }
+    }
 
+    IEnumerator paralize()
+    {
+        runSpeed *= 0.1f;
+        yield return new WaitForSeconds(2f);
+        runSpeed /= 0.1f;
     }
 
 
@@ -239,7 +248,7 @@ public class PlayerController2 : MonoBehaviour
 
         if (_controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
         {
-            _velocity.y *= 3f;
+            _velocity.y -= 3f;
             _controller.ignoreOneWayPlatformsThisFrame = true;
         }
 
