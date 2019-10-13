@@ -15,6 +15,10 @@ public class MenuScripts : MonoBehaviour
 
     public void StartGame()
     {
+        if (FindObjectOfType<PressStartToJoin>().playerMap.Count <= 0)
+        {
+            return;
+        }
         GameManager.Instance.StartGame(FindObjectOfType<PressStartToJoin>().playerMap);
     }
 
