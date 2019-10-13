@@ -557,7 +557,7 @@ MonoBehaviour:
       - _actionCategoryId: 0
         _actionId: 5
         _elementType: 1
-        _elementIdentifierId: 6
+        _elementIdentifierId: 7
         _axisRange: 0
         _invert: 0
         _axisContribution: 0
@@ -656,7 +656,7 @@ MonoBehaviour:
     controllerMapLayoutManagerRuleSets: []
     controllerMapEnablerRuleSets: []
     playerIdCounter: 7
-    actionIdCounter: 6
+    actionIdCounter: 7
     actionCategoryIdCounter: 1
     inputBehaviorIdCounter: 1
     mapCategoryIdCounter: 1
@@ -822,7 +822,8 @@ GameObject:
   - component: {fileID: 424567714}
   - component: {fileID: 424567716}
   - component: {fileID: 424567715}
-  m_Layer: 0
+  - component: {fileID: 424567717}
+  m_Layer: 11
   m_Name: ray
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -918,6 +919,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &424567717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424567713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08843e2f1e3454846840b779bce4d74f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &479392585
 GameObject:
   m_ObjectHideFlags: 0
@@ -5888,6 +5901,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2604504702860926819, guid: 7b4d71465b092a141af9c875e4c758ae,
+        type: 3}
+      propertyPath: playerInputId
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b4d71465b092a141af9c875e4c758ae, type: 3}
 --- !u!1 &897477571
@@ -5984,6 +6002,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604504702860926825, guid: 7b4d71465b092a141af9c875e4c758ae,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2604504702860926823, guid: 7b4d71465b092a141af9c875e4c758ae,
         type: 3}
@@ -6182,7 +6205,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.7777778, y: 0.5}
-    oldSize: {x: 0.9, y: 1.3}
+    oldSize: {x: 1.92, y: 1.08}
     newSize: {x: 0.18, y: 0.26}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -9641,8 +9664,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.26}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 1}
-    oldSize: {x: 0.56, y: 0.52}
+    pivot: {x: 0.393617, y: 0.5078802}
+    oldSize: {x: 0.64, y: 0.36}
     newSize: {x: 0.18, y: 0.26}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
