@@ -8,6 +8,12 @@ public abstract class Item : MonoBehaviour{
 
     public bool locked = false;
     public void Use(ItemPickUpBehavior player) {
+
+        if (locked)
+        {
+            return;
+        }
+
         GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
         locked = true;
         StartCoroutine(UseItem1(player));

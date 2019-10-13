@@ -51,6 +51,7 @@ public class PlayerSpawner : MonoBehaviour
             playersInGame.Add(player, newPlayer.GetComponent<PlayerController2>());
         }
 
+
     }
 
     // Update is called once per frame
