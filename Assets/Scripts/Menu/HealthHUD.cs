@@ -10,8 +10,6 @@ public class HealthHUD : MonoBehaviour {
     public RectTransform layout;
     public RectTransform defaultPlayer;
 
-    private List<RectTransform> playerHUDs = new List<RectTransform>();
-
     private void Start()
     {
         SetupHealthComponents();
@@ -30,8 +28,7 @@ public class HealthHUD : MonoBehaviour {
         {
             RectTransform newHUD = Instantiate(defaultPlayer, layout.transform);
             newHUD.Find("Image").GetComponent<RawImage>().texture = images[entry.Key.gamePlayerId];
-
-            playerHUDs.Add(newHUD);
+            newHUD.GetComponent<IndividualHealthHUD>().characterLife = entry.Value.GetComponent<CharacterLife>();
         }
     }
 }

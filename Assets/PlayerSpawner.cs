@@ -40,7 +40,7 @@ public class PlayerSpawner : MonoBehaviour
             newPlayer.GetComponent<PlayerController2>().playerId = player.rewiredPlayerId;
             newPlayer.GetComponent<SpriteRenderer>().color = colors[player.gamePlayerId];
 
-            FindObjectOfType<CinemachineTargetGroup>().AddMember(newPlayer.transform, 1, 10);
+            FindObjectOfType<CinemachineTargetGroup>().AddMember(newPlayer.transform, 1, 14);
 
             playersInGame.Add(player, newPlayer.GetComponent<PlayerController2>());
         }
