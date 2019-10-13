@@ -8,7 +8,15 @@ public class PlayerController2 : MonoBehaviour
 {
 
 
+    // sounds
+    private AudioSource audioSource;
+    public AudioClip jumpClip;
+    public AudioClip hookedClip;
+    public AudioClip waterClip;
+
+
     public int playerInputId = 0;
+
 
     // movement config
     public float gravity = -25f;
@@ -60,6 +68,9 @@ public class PlayerController2 : MonoBehaviour
                 break;
 
             case PlayerState.Hooked:
+                audioSource.volume = 0.3F;
+                audioSource.clip = hookedClip;
+                audioSource.PlayOneShot(hookedClip);
                 isGravity = false;
                 _velocity = Vector3.zero;
                 break;
@@ -103,6 +114,8 @@ public class PlayerController2 : MonoBehaviour
         defaultGravity = gravity;
 
         characterLife_ = GetComponent<CharacterLife>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
 
@@ -147,6 +160,13 @@ public class PlayerController2 : MonoBehaviour
         }
         else
         {
+            if(!_isDownInWater && _velocity.magnitude > 10)
+            {
+                audioSource.volume = 0.3F;
+                audioSource.clip = waterClip;
+                audioSource.PlayOneShot(waterClip);
+            }
+
             _isDownInWater = true;
         }
 
@@ -203,6 +223,10 @@ public class PlayerController2 : MonoBehaviour
     {
         _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
         _animator.SetTrigger("isJumping");
+
+        audioSource.volume = 0.3F;
+        audioSource.clip = jumpClip;
+        audioSource.PlayOneShot(jumpClip);
     }
 
     private void ManageDefaultControl()
