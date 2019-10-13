@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class waterBehavior : MonoBehaviour
 {
-    public float speed = 1.25f;
+    [SerializeField]
+    private float speed = 1.25f;
 
     // Start is called before the first frame update
     void Start()
