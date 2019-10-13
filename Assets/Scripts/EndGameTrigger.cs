@@ -5,6 +5,9 @@ using DG.Tweening;
 
 public class EndGameTrigger : MonoBehaviour
 {
+    [SerializeField]
+    private Transform levelSurface;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,11 +20,14 @@ public class EndGameTrigger : MonoBehaviour
         if (collided.tag == "Player")
         {
             Debug.Log("Un joueur a gagné !");
-            GameObject helicoptere = GameObject.Find("Helicoptere");
+            GameObject helicopter = GameObject.Find("Helicopter");
+
+            Vector3 helicopterLandingPosition = levelSurface.position + new Vector3(-levelSurface.localScale.x / 4, 3 * helicopter.transform.localScale.y + levelSurface.localScale.y / 2);
+            Vector3[] waypoints = new Vector3[] { new Vector3(levelSurface.position.x, helicopter.transform.position.y), helicopterLandingPosition };
             DOTween.Sequence()
-                .Append(helicoptere.transform.DOMove(collided.transform.position, 1))
+                .Append(helicopter.transform.DOPath(waypoints, 2, PathType.CatmullRom).SetEase(Ease.OutQuad))
                 .AppendInterval(1)
-                .Append(helicoptere.transform.DOMove(collided.transform.position + new Vector3(0, 10), 1));
+                .Append(helicopter.transform.DOMove(helicopterLandingPosition + new Vector3(0, 10), 2).SetEase(Ease.InQuad));
         }
     }
 
