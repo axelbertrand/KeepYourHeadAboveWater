@@ -35,7 +35,7 @@ public class PressStartToJoin : MonoBehaviour
 
     public int maxPlayers = 4;
 
-    private List<PlayerMap> playerMap; // Maps Rewired Player ids to game player ids
+    public List<PlayerMap> playerMap; // Maps Rewired Player ids to game player ids
     private int gamePlayerIdCounter = 0;
 
     void Awake()
@@ -117,7 +117,7 @@ public class PressStartToJoin : MonoBehaviour
     }
 
     // This class is used to map the Rewired Player Id to your game player id
-    private class PlayerMap
+    public class PlayerMap
     {
         public int rewiredPlayerId;
         public int gamePlayerId;

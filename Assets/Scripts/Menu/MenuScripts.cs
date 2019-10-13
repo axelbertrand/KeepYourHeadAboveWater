@@ -15,7 +15,7 @@ public class MenuScripts : MonoBehaviour
 
     public void StartGame()
     {
-        SceneLoader.Instance.LoadScene("character");
+        GameManager.Instance.StartGame(FindObjectOfType<PressStartToJoin>().playerMap);
     }
 
 }
