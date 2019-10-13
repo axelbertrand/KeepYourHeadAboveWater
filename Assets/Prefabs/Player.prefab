@@ -888,7 +888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94db050336b7f3d4fadbf3085afadabc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerInputId: 1
+  playerInputId: 0
   gravity: -25
   runSpeed: 8
   groundDamping: 20
@@ -900,7 +900,6 @@ MonoBehaviour:
     m_Bits: 4096
   HighPoint: {fileID: 1621155566}
   DownPoint: {fileID: 1828163220}
-  playerId: 0
 --- !u!114 &408636730
 MonoBehaviour:
   m_ObjectHideFlags: 0
