@@ -20,11 +20,14 @@ public class VictoryScreenManager : MonoBehaviour
 
     private void Awake()
     {
-        StartVictoryScreen(1, new List<int> { 0, 2 });
+
+    
+
     }
 
     public void StartVictoryScreen(int winnerId, List<int> looserIds)
     {
+
         borderImage.SetActive(true);
         contentImage.SetActive(true);
         eventSystem.SetSelectedGameObject(restartButton.gameObject);

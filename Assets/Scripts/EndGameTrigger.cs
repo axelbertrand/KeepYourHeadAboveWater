@@ -63,9 +63,8 @@ public class EndGameTrigger : MonoBehaviour
             targetGroupComponent.m_Targets = targetList.ToArray();
 
             // Disable player control
-            collided.GetComponentInParent<PlayerController2>().enabled = false;
-            collided.GetComponentInParent<Prime31.CharacterController2D>().enabled = false;
-            
+            collided.GetComponentInParent<PlayerController2>().SetPlayerState(PlayerController2.PlayerState.DontMove);
+           
             // Disable collisions with the object being attached
             BoxCollider2D collider = collided.GetComponentInParent<BoxCollider2D>();
             if (collider != null)
@@ -88,24 +87,30 @@ public class EndGameTrigger : MonoBehaviour
             }
             waypoints.Add(pickUpPoint.position);
 
+
+
             
             DOTween.Sequence()
                 
                 // Move helicopter to the landing spot
                 .Append(helicopter.DOPath(waypoints.ToArray(), 4, PathType.CatmullRom).SetEase(Ease.OutQuad))
-                .AppendInterval(0.5f)
+                .AppendInterval(0.25f)
                 // Attach winner to helicopter
                 .AppendCallback(() =>
                 {
                     collided.transform.SetParent(helicopterPlayerPoint.transform);
                     collided.transform.localPosition = Vector3.zero;
+
+                    collided.GetComponentInParent<PlayerController2>().SetPlayerState(PlayerController2.PlayerState.Hooked);
                 })
                 // Helicopter landing off
                 .Append(helicopter.transform.DOMove(pickUpPoint.position + new Vector3(0, 15), 2).SetEase(Ease.InQuad))
+
                 // When finished show end game menu
-                .OnComplete(() =>
+                .AppendCallback(() =>
                 {
-                    GameObject.Find("EndGameText").GetComponent<Text>().enabled = true;
+                    Debug.Log("complete animation");
+                    GameManager.Instance.GameOver(collider.GetComponent<PlayerController2>().gamePlayerId);
                 });
         }
     }

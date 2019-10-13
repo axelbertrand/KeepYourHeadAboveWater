@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerController2 : MonoBehaviour
 {
 
-
+    public int gamePlayerId = 0;
     public int playerInputId = 0;
 
     // movement config
@@ -56,6 +56,7 @@ public class PlayerController2 : MonoBehaviour
                 break;
 
             case PlayerState.DontMove:
+                isGravity = false;
                 _velocity = Vector3.zero;
                 break;
 

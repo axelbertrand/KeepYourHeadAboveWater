@@ -41,6 +41,7 @@ public class PlayerSpawner : MonoBehaviour
 
             GameObject newPlayer = Instantiate(playerPrefab, spawnPoints[player.gamePlayerId].position, new Quaternion());
             newPlayer.GetComponent<PlayerController2>().playerInputId = player.rewiredPlayerId;
+            newPlayer.GetComponent<PlayerController2>().gamePlayerId = player.gamePlayerId;
 
             newPlayer.GetComponent<PlayerSprites>().bodySpriteRenderer.sprite = bodySprites[player.gamePlayerId];
             newPlayer.GetComponent<PlayerSprites>().headSpriteRenderer.sprite = headSprites[player.gamePlayerId];
