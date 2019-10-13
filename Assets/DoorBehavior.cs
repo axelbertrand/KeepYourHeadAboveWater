@@ -10,6 +10,8 @@ public class DoorBehavior : MonoBehaviour
     private SpriteRenderer doorRenderer;
     private BoxCollider2D doorCollider;
 
+    public Sprite[] sprites;
+
     private void Start()
 
     {
@@ -18,12 +20,12 @@ public class DoorBehavior : MonoBehaviour
         if (isOpen)
         {
             doorCollider.enabled = false;
-            doorRenderer.color = Color.grey;
+            doorRenderer.sprite = sprites[0];
         }
         else
         {
             doorCollider.enabled = true;
-            doorRenderer.color = Color.black;
+            doorRenderer.sprite = sprites[1];
         }
     }
 
