@@ -7,6 +7,11 @@ public class Boot : Item {
     public AudioSource source;
     public AudioClip clip;
     protected override IEnumerator UseItem(PlayerController2 player) {
+
+        source.volume = 0.7F;
+        source.clip = clip;
+        source.PlayOneShot(clip);
+
         player.runSpeed *= 1.5f;
 
         GetComponentInChildren<ParticleSystem>().Play();
@@ -14,8 +19,6 @@ public class Boot : Item {
         yield return new WaitForSeconds(4);
         player.runSpeed /= 1.5f;
 
-        source.volume = 0.7F;
-        source.clip = clip;
-        source.PlayOneShot(clip);
+        
     }
 }

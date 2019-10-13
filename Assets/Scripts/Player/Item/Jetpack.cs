@@ -12,12 +12,14 @@ public class Jetpack : Item{
 
         player.jumpHeight *= 5f;
 
+        source.volume = 0.7F;
+        source.clip = clip;
+        source.PlayOneShot(clip);
+
         player.Jump();
         yield return new WaitForSeconds(2);
         player.jumpHeight /= 5f;
 
-        source.volume = 0.7F;
-        source.clip = clip;
-        source.PlayOneShot(clip);
+       
     }
 }
