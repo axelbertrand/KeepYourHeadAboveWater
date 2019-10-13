@@ -37,17 +37,20 @@ public class GameManager : Singleton<GameManager>
 
     public void StartGame(List<PressStartToJoin.PlayerMap> plyrs)
     {
+        Time.timeScale = 1;
         players = plyrs;
         SceneLoader.Instance.LoadScene("GameScene");
     }
 
     public void RestartGame()
     {
+        Time.timeScale = 1;
         SceneLoader.Instance.LoadScene("GameScene");
     }
 
     public void GoMainMenu()
     {
+        Time.timeScale = 1;
         SceneLoader.Instance.LoadScene("MainMenu");
     }
 }
