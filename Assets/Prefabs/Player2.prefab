@@ -869,7 +869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignoreOneWayPlatformsThisFrame: 0
-  _skinWidth: 0.02
+  _skinWidth: 0.05
   platformMask:
     serializedVersion: 2
     m_Bits: 1
@@ -914,8 +914,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  totalHorizontalRays: 8
-  totalVerticalRays: 4
+  totalHorizontalRays: 10
+  totalVerticalRays: 7
 --- !u!95 &9087174120255322770
 Animator:
   serializedVersion: 3
