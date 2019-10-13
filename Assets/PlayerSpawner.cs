@@ -9,7 +9,9 @@ public class PlayerSpawner : MonoBehaviour
     public GameObject playerPrefab;
 
     public Transform[] spawnPoints;
-    public Color[] colors;
+
+    public Sprite[] headSprites;
+    public Sprite[] bodySprites;
 
     public Dictionary<PressStartToJoin.PlayerMap, PlayerController2> playersInGame = new Dictionary<PressStartToJoin.PlayerMap, PlayerController2>();
 
@@ -36,9 +38,12 @@ public class PlayerSpawner : MonoBehaviour
 
         foreach(PressStartToJoin.PlayerMap player in playerMap)
         {
+
             GameObject newPlayer = Instantiate(playerPrefab, spawnPoints[player.gamePlayerId].position, new Quaternion());
-            newPlayer.GetComponent<PlayerController2>().playerId = player.rewiredPlayerId;
-            newPlayer.GetComponent<SpriteRenderer>().color = colors[player.gamePlayerId];
+            newPlayer.GetComponent<PlayerController2>().playerInputId = player.rewiredPlayerId;
+
+            newPlayer.GetComponent<PlayerSprites>().bodySpriteRenderer.sprite = bodySprites[player.gamePlayerId];
+            newPlayer.GetComponent<PlayerSprites>().headSpriteRenderer.sprite = headSprites[player.gamePlayerId];
 
             FindObjectOfType<CinemachineTargetGroup>().AddMember(newPlayer.transform, 1, 14);
 

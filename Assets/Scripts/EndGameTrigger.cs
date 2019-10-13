@@ -10,29 +10,62 @@ using Cinemachine;
 public class EndGameTrigger : MonoBehaviour
 {
     [SerializeField]
-    private Transform levelSurface;
+    private Transform helicopter;
+
+    [SerializeField]
+    private GameObject helicopterPlayerPoint;
+
+    [SerializeField]
+    private Transform[] helicopterWayPoints;
+
+    [SerializeField]
+    private Transform pickUpPoint;
+
+
+    private bool isGameOver = false;
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        GameObject collided = collision.gameObject;
+
+        if (isGameOver)
+        {
+            return;
+        }
+
+        GameObject collided = collision.transform.root.gameObject;
         if (collided.tag == "Player")
         {
+            isGameOver = true;
+
             Debug.Log("Un joueur a gagné !");
 
-            // Focus the camera on the winner
-            CinemachineTargetGroup targetGroupComponent = GameObject.Find("TargetGroup").GetComponent<CinemachineTargetGroup>();
-            List<CinemachineTargetGroup.Target> targetList = new List<CinemachineTargetGroup.Target>(targetGroupComponent.m_Targets);
-            CinemachineTargetGroup.Target winnerTarget = targetList.Find(target => target.target == collided.transform.parent);
-            winnerTarget.radius = 10;
-            targetList.Clear();
-            targetList.Add(winnerTarget);
+
+
+            // Focus the camera on the winner and the helicopter
+            CinemachineTargetGroup targetGroupComponent = FindObjectOfType<CinemachineTargetGroup>();
+
+            CinemachineTargetGroup.Target newTargetWinner = new CinemachineTargetGroup.Target();
+            newTargetWinner.target = collided.transform;
+            newTargetWinner.radius = 10;
+            newTargetWinner.weight = 1;
+
+            CinemachineTargetGroup.Target newTargetHelicopter = new CinemachineTargetGroup.Target();
+            newTargetHelicopter.target = helicopter;
+            newTargetHelicopter.radius = 15;
+            newTargetHelicopter.weight = 1.1f;
+
+
+            List<CinemachineTargetGroup.Target> targetList = new List<CinemachineTargetGroup.Target>();
+            targetList.Add(newTargetWinner);
+            targetList.Add(newTargetHelicopter);
+
+
             targetGroupComponent.m_Targets = targetList.ToArray();
 
             // Disable player control
             collided.GetComponentInParent<PlayerController2>().enabled = false;
             collided.GetComponentInParent<Prime31.CharacterController2D>().enabled = false;
-            GameObject helicopter = GameObject.Find("Helicopter");
-
+            
             // Disable collisions with the object being attached
             BoxCollider2D collider = collided.GetComponentInParent<BoxCollider2D>();
             if (collider != null)
@@ -47,27 +80,28 @@ public class EndGameTrigger : MonoBehaviour
                 rigidBody.isKinematic = true;
             }
 
-            Vector3 helicopterLandingPosition = levelSurface.position + new Vector3(-levelSurface.localScale.x / 4, 2 * helicopter.transform.localScale.y + levelSurface.localScale.y / 2);
-            Vector3 winnerPosition = new Vector3(helicopterLandingPosition.x, levelSurface.position.y + collided.transform.parent.localScale.y / 2 + levelSurface.localScale.y / 2);
-            Vector3[] waypoints = new Vector3[] { new Vector3(levelSurface.position.x, helicopter.transform.position.y), helicopterLandingPosition };
+
+            List<Vector3> waypoints = new List<Vector3>();
+
+            foreach(Transform waypoint in helicopterWayPoints){
+                waypoints.Add(waypoint.position);
+            }
+            waypoints.Add(pickUpPoint.position);
+
             
             DOTween.Sequence()
-                // Move winner to the landing spot
-                .Append(collided.transform.parent.DOMove(winnerPosition, 1))
+                
                 // Move helicopter to the landing spot
-                .Append(helicopter.transform.DOPath(waypoints, 3, PathType.CatmullRom).SetEase(Ease.OutQuad))
-                .AppendInterval(1)
+                .Append(helicopter.DOPath(waypoints.ToArray(), 4, PathType.CatmullRom).SetEase(Ease.OutQuad))
+                .AppendInterval(0.5f)
                 // Attach winner to helicopter
                 .AppendCallback(() =>
                 {
-                    collided.transform.parent.SetParent(helicopter.transform);
-                    collided.transform.parent.localPosition = Vector3.zero;
-                    CinemachineVirtualCamera camera2D = GameObject.Find("2DCamera").GetComponent<CinemachineVirtualCamera>();
-                    camera2D.Follow = null;
-                    camera2D.LookAt = collided.transform.parent;
+                    collided.transform.SetParent(helicopterPlayerPoint.transform);
+                    collided.transform.localPosition = Vector3.zero;
                 })
                 // Helicopter landing off
-                .Append(helicopter.transform.DOMove(helicopterLandingPosition + new Vector3(0, 15), 2).SetEase(Ease.InQuad))
+                .Append(helicopter.transform.DOMove(pickUpPoint.position + new Vector3(0, 15), 2).SetEase(Ease.InQuad))
                 // When finished show end game menu
                 .OnComplete(() =>
                 {
