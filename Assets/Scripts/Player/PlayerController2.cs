@@ -126,26 +126,12 @@ public class PlayerController2 : MonoBehaviour
     #endregion
 
     // the Update loop contains a very simple example of moving the character around and controlling the animation
-    void FixedUpdate()
+    public void Update()
     {
         //Checking if player is partially in water or not
-        if (Physics2D.OverlapCircle(HighPoint.transform.position, 0.25f, waterMask) == null)
-        {
-            _isUpInWater = false;
-        }
-        else
-        {
-            _isUpInWater = true;
-        }
+        _isUpInWater = (Physics2D.OverlapCircle(HighPoint.transform.position, 0.25f, waterMask) != null);
 
-        if (Physics2D.OverlapCircle(DownPoint.transform.position, 0.25f, waterMask) == null)
-        {
-            _isDownInWater = false;
-        }
-        else
-        {
-            _isDownInWater = true;
-        }
+        _isDownInWater = (Physics2D.OverlapCircle(DownPoint.transform.position, 0.25f, waterMask) != null);
 
         if (_controller.isGrounded)
         _velocity.y = 0;
@@ -186,7 +172,10 @@ public class PlayerController2 : MonoBehaviour
                 _velocity.y += gravity * Time.deltaTime;
             }
         }
+    }
 
+    private void FixedUpdate()
+    {
         _controller.move(_velocity * Time.deltaTime);
 
         // grab our current _velocity to use as a base for all calculations

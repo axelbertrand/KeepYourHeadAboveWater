@@ -207,7 +207,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 26.624998
+  orthographic size: 9.0625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -231,7 +231,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 76606368}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.190001, y: 14.799999, z: -15}
+  m_LocalPosition: {x: 9.190001, y: 0.75, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -6085,7 +6085,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 500921202}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.190001, y: 14.799999, z: 0}
+  m_LocalPosition: {x: 9.190001, y: 0.75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -6303,7 +6303,6 @@ MonoBehaviour:
   HighPoint: {fileID: 0}
   DownPoint: {fileID: 0}
   playerId: 0
-  item: {fileID: 0}
 --- !u!95 &890919175
 Animator:
   serializedVersion: 3
@@ -6557,7 +6556,7 @@ GameObject:
   - component: {fileID: 1089036821}
   - component: {fileID: 1089036820}
   - component: {fileID: 1089036819}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: WaterLevel
   m_TagString: Water
   m_Icon: {fileID: 0}
@@ -7180,7 +7179,7 @@ PrefabInstance:
     - target: {fileID: 2604504702860926823, guid: 7b4d71465b092a141af9c875e4c758ae,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 31.1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2604504702860926823, guid: 7b4d71465b092a141af9c875e4c758ae,
         type: 3}
@@ -7583,7 +7582,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2013134794}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.190001, y: 14.799999, z: -15}
+  m_LocalPosition: {x: 9.190001, y: 0.75, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 253265794}
