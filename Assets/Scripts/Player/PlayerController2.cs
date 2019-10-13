@@ -46,7 +46,8 @@ public class PlayerController2 : MonoBehaviour
         Default,
         DontMove,
         Ladder,
-        Hooked
+        Hooked,
+        InWater
     }
 
     public void SetPlayerState(PlayerState value)
