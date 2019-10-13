@@ -13,11 +13,7 @@ public class HookBehavior : MonoBehaviour
 
     private GameObject hookedObject;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private Vector3 bottomPosition;
 
     // Update is called once per frame
     void Update()
@@ -27,11 +23,18 @@ public class HookBehavior : MonoBehaviour
 
     public void LaunchHook(FishingRod player, float length, float speed)
     {
+
+        transform.localScale = player.transform.localScale.x < 0 ? new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z) : transform.localScale; 
+
+        bottomPosition = new Vector3(transform.position.x, transform.position.y - length, transform.position.z);
+
         sequence = DOTween.Sequence();
         sequence.Append(transform.DOMoveY(transform.position.y - length, speed).SetEase(Ease.Linear)).AppendCallback(() => GoBackToPlayer()); ;
 
         cableSpeed = speed;
         playerFishingRod = player;
+
+        GetComponent<SpringJointRenderer>().parent = playerFishingRod.hookPosition.transform;
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -59,7 +62,10 @@ public class HookBehavior : MonoBehaviour
             sequence.Kill();
         }
 
+        float perc = Vector3.Distance(bottomPosition, transform.position) / Vector3.Distance(bottomPosition, playerFishingRod.hookPosition.transform.position);
+        float newSpeed = (1 - perc) * cableSpeed; 
+
         sequence = DOTween.Sequence();
-        sequence.Append(transform.DOMoveY(playerFishingRod.transform.position.y, cableSpeed).SetEase(Ease.Linear)).AppendCallback((() => playerFishingRod.CancelFishingRod(hookedObject)));
+        sequence.Append(transform.DOMoveY(playerFishingRod.transform.position.y, newSpeed).SetEase(Ease.Linear)).AppendCallback((() => playerFishingRod.CancelFishingRod(hookedObject)));
     }
 }
