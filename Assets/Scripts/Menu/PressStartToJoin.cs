@@ -36,7 +36,7 @@ public class PressStartToJoin : MonoBehaviour
     public int maxPlayers = 4;
 
     public List<PlayerMap> playerMap; // Maps Rewired Player ids to game player ids
-    private int gamePlayerIdCounter = 0;
+    private List<int> freeGamePlayerId = new List<int>{ 0, 1, 2, 3 };
 
     void Awake()
     {
@@ -52,8 +52,12 @@ public class PressStartToJoin : MonoBehaviour
         {
             if (ReInput.players.GetPlayer(i).GetButtonDown("JoinGame"))
             {
-                Debug.Log("joingame");
                 AssignNextPlayer(i);
+            }
+
+            if (ReInput.players.GetPlayer(i).GetButtonDown("LeaveGame"))
+            {
+                UnAssignPlayer(i);
             }
         }
     }
@@ -66,25 +70,70 @@ public class PressStartToJoin : MonoBehaviour
             return;
         }
 
+
+        bool found = false;
+        int index = 0;
+        for (; index < playerMap.Count; ++index)
+        {
+            if (playerMap[index].rewiredPlayerId == rewiredPlayerId)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            return;
+        }
+
+
+
+
+
         int gamePlayerId = GetNextGamePlayerId();
 
         // Add the Rewired Player as the next open game player slot
         playerMap.Add(new PlayerMap(rewiredPlayerId, gamePlayerId));
 
-        SwitchImgAndText(gamePlayerId);
+        SwitchTextToImg(gamePlayerId);
 
-        Player rewiredPlayer = ReInput.players.GetPlayer(rewiredPlayerId);
+        //Player rewiredPlayer = ReInput.players.GetPlayer(rewiredPlayerId);
 
         // Disable the Assignment map category in Player so no more JoinGame Actions return
-        rewiredPlayer.controllers.maps.SetMapsEnabled(false, "Assignment");
-
-        // Enable UI control for this Player now that he has joined
-        rewiredPlayer.controllers.maps.SetMapsEnabled(true, "Default");
+        //rewiredPlayer.controllers.maps.SetMapsEnabled(false, "Assignment");
 
         Debug.Log("Added Rewired Player id " + rewiredPlayerId + " to game player " + gamePlayerId);
     }
 
-    private void SwitchImgAndText(int playerId)
+    void UnAssignPlayer(int rewiredPlayerId)
+    {
+        bool found = false;
+        int index = 0;
+        for (; index < playerMap.Count; ++index)
+        {
+            if (playerMap[index].rewiredPlayerId == rewiredPlayerId)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            int gamePlayerId = playerMap[index].gamePlayerId;
+            SwitchImgToTxt(gamePlayerId);
+            freeGamePlayerId.Add(gamePlayerId);
+            freeGamePlayerId.Sort();
+            playerMap.RemoveAt(index);
+        }
+        else
+        {
+            Debug.Log("Deleting unknown RewiredId");
+        }
+    }
+
+    private void SwitchTextToImg(int playerId)
     {
         switch (playerId)
         {
@@ -109,11 +158,44 @@ public class PressStartToJoin : MonoBehaviour
         }
     }
 
+    private void SwitchImgToTxt(int playerId)
+    {
+        switch (playerId)
+        {
+            case 0:
+                player1Text.SetActive(true);
+                player1Img.SetActive(false);
+                break;
+            case 1:
+                player2Text.SetActive(true);
+                player2Img.SetActive(false);
+                break;
+            case 2:
+                player3Text.SetActive(true);
+                player3Img.SetActive(false);
+                break;
+            case 3:
+                player4Text.SetActive(true);
+                player4Img.SetActive(false);
+                break;
+            default:
+                break;
+        }
+    }
+
 
 
     private int GetNextGamePlayerId()
     {
-        return gamePlayerIdCounter++;
+        if (freeGamePlayerId.Count <= 0)
+        {
+            Debug.Log("No more game id to give.");
+            return 0;
+        }
+
+        int res = freeGamePlayerId[0];
+        freeGamePlayerId.RemoveAt(0);
+        return res;
     }
 
     // This class is used to map the Rewired Player Id to your game player id
@@ -127,5 +209,15 @@ public class PressStartToJoin : MonoBehaviour
             this.rewiredPlayerId = rewiredPlayerId;
             this.gamePlayerId = gamePlayerId;
         }
+    }
+
+    public void Reset()
+    {
+        for (int i = 0; i<4; ++i)
+        {
+            SwitchImgToTxt(i);
+        }
+        freeGamePlayerId = new List<int> { 0, 1, 2, 3 };
+        playerMap.Clear();
     }
 }
