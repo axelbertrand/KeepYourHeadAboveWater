@@ -20,6 +20,7 @@ public class PlayerController2 : MonoBehaviour
 
     // movement config
     public float gravity = -25f;
+
     public float runSpeed = 8f;
     public float groundDamping = 20f; // how fast do we change direction? higher means faster
     public float inAirDamping = 5f;
@@ -50,13 +51,12 @@ public class PlayerController2 : MonoBehaviour
         Default,
         DontMove,
         Ladder,
-        Hooked
+        Hooked,
+        InWater
     }
-
 
     public void SetPlayerState(PlayerState value)
     {
-
         switch (value)
         {
             case PlayerState.Default:
@@ -75,13 +75,15 @@ public class PlayerController2 : MonoBehaviour
                 isGravity = false;
                 _velocity = Vector3.zero;
                 break;
+
+            case PlayerState.InWater:
+                break;
+
             case PlayerState.Ladder:
                 isGravity = false;
                 _velocity = Vector3.zero;
                 break;
-
         }
-
 
         playerState = value;
     }
@@ -119,16 +121,13 @@ public class PlayerController2 : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-
     #region Event Listeners
 
-    void onControllerCollider(RaycastHit2D hit)
+    private void onControllerCollider(RaycastHit2D hit)
     {
-
     }
 
-
-    void onTriggerEnterEvent(Collider2D col)
+    private void onTriggerEnterEvent(Collider2D col)
     {
         Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
         if(col.gameObject.name == "ray") {
@@ -149,7 +148,7 @@ public class PlayerController2 : MonoBehaviour
         //Debug.Log("onTriggerExitEvent: " + col.gameObject.name);
     }
 
-    #endregion
+    #endregion Event Listeners
 
     // the Update loop contains a very simple example of moving the character around and controlling the animation
     public void Update()
@@ -187,9 +186,12 @@ public class PlayerController2 : MonoBehaviour
 
             case PlayerState.Hooked:
                 break;
-            case PlayerState.Ladder:
+
+            case PlayerState.InWater:
                 break;
 
+            case PlayerState.Ladder:
+                break;
         }
 
         if (isGravity)
@@ -260,22 +262,19 @@ public class PlayerController2 : MonoBehaviour
             normalizedHorizontalSpeed = 0;
         }
 
-
         // we can only jump whilst grounded
         if ((_controller.isGrounded || (_isDownInWater && !_isUpInWater)) && playerInput.GetButtonDown("Jump"))
         {
             Jump();
         }
 
-
-        // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
+        // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or
+        // something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
 
-
-
-        // if holding down bump up our movement amount and turn off one way platform detection for a frame.
-        // this lets us jump down through one way platforms
+        // if holding down bump up our movement amount and turn off one way platform detection for a
+        // frame. this lets us jump down through one way platforms
 
         if (_controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
         {
