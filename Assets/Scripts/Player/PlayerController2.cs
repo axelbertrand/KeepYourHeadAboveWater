@@ -23,7 +23,6 @@ public class PlayerController2 : MonoBehaviour
     public GameObject DownPoint;
 
     public int playerId;
-    public Item item;
 
     [HideInInspector]
     private float normalizedHorizontalSpeed = 0;
@@ -77,6 +76,11 @@ public class PlayerController2 : MonoBehaviour
         playerState = value;
     }
 
+    public PlayerState GetPlayerState()
+    {
+        return playerState;
+    }
+
     private Player playerInput;
 
     private bool _isUpInWater;
@@ -110,17 +114,7 @@ public class PlayerController2 : MonoBehaviour
     void onTriggerEnterEvent(Collider2D col)
     {
         Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
-        Item i = col.GetComponent<Item>();
-        if (i && (!item || !item.locked)) {
-            if (item) {
-                Destroy(item.gameObject);
-            }
-            item = i;
-            col.transform.parent = transform;
-            col.transform.localPosition = new Vector3(0, 0, -0.1f);
-            col.transform.localScale = new Vector3(1, 1, 1);
-            col.enabled = false;
-        }
+
     }
 
 
@@ -197,12 +191,14 @@ public class PlayerController2 : MonoBehaviour
 
         // grab our current _velocity to use as a base for all calculations
         _velocity = _controller.velocity;
-
-
-        if (playerInput.GetButtonDown("Item") && item)
-            item.Use(this);
     }
 
+
+    public void Jump()
+    {
+        _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
+        _animator.Play(Animator.StringToHash("Jump"));
+    }
 
     private void ManageDefaultControl()
     {
@@ -240,8 +236,7 @@ public class PlayerController2 : MonoBehaviour
         // we can only jump whilst grounded
         if ((_controller.isGrounded || (_isDownInWater && !_isUpInWater)) && playerInput.GetButtonDown("Jump"))
         {
-            _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
-            _animator.Play(Animator.StringToHash("Jump"));
+            Jump();
         }
 
 
