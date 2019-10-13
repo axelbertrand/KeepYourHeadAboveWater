@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class PlayerController2 : MonoBehaviour
 {
+
+
     public int playerInputId = 0;
 
     // movement config
@@ -15,6 +17,11 @@ public class PlayerController2 : MonoBehaviour
     public float groundDamping = 20f; // how fast do we change direction? higher means faster
     public float inAirDamping = 5f;
     public float jumpHeight = 3f;
+    public float floatingDelta = 1.0f;
+
+    public LayerMask waterMask;
+    public GameObject HighPoint;
+    public GameObject DownPoint;
 
     public int playerId;
     public Item item;
@@ -26,6 +33,7 @@ public class PlayerController2 : MonoBehaviour
     private Animator _animator;
     private RaycastHit2D _lastControllerColliderHit;
     private Vector3 _velocity;
+    private CharacterLife characterLife_;
 
     private float defaultGravity;
 
@@ -38,7 +46,6 @@ public class PlayerController2 : MonoBehaviour
         Default,
         DontMove,
         Ladder,
-        InWater,
         Hooked
     }
 
@@ -73,7 +80,10 @@ public class PlayerController2 : MonoBehaviour
 
     private Player playerInput;
 
-    private void Awake()
+    private bool _isUpInWater;
+    private bool _isDownInWater;
+
+    void Awake()
     {
         _animator = GetComponent<Animator>();
         _controller = GetComponent<CharacterController2D>();
@@ -84,8 +94,9 @@ public class PlayerController2 : MonoBehaviour
         _controller.onTriggerExitEvent += onTriggerExitEvent;
 
         playerInput = ReInput.players.GetPlayer(playerInputId);
-
         defaultGravity = gravity;
+
+        characterLife_ = GetComponent<CharacterLife>();
     }
 
     #region Event Listeners
@@ -114,7 +125,7 @@ public class PlayerController2 : MonoBehaviour
 
     private void onTriggerExitEvent(Collider2D col)
     {
-        Debug.Log("onTriggerExitEvent: " + col.gameObject.name);
+        //Debug.Log("onTriggerExitEvent: " + col.gameObject.name);
     }
 
     #endregion Event Listeners
@@ -123,8 +134,27 @@ public class PlayerController2 : MonoBehaviour
     // the animation
     private void FixedUpdate()
     {
+        //Checking if player is partially in water or not
+        if (Physics2D.OverlapCircle(HighPoint.transform.position, 0.25f, waterMask) == null)
+        {
+            _isUpInWater = false;
+        }
+        else
+        {
+            _isUpInWater = true;
+        }
+
+        if (Physics2D.OverlapCircle(DownPoint.transform.position, 0.25f, waterMask) == null)
+        {
+            _isDownInWater = false;
+        }
+        else
+        {
+            _isDownInWater = true;
+        }
+
         if (_controller.isGrounded)
-            _velocity.y = 0;
+        _velocity.y = 0;
 
         switch (playerState)
         {
@@ -148,7 +178,22 @@ public class PlayerController2 : MonoBehaviour
         if (isGravity)
         {
             // apply gravity before moving
-            _velocity.y += gravity * Time.deltaTime;
+            if (_isDownInWater)
+            {
+                if (_velocity.y < 0)
+                {
+                    _velocity.y = _velocity.y * 0.95f;
+                }
+                if (_isUpInWater)
+                {
+                    _velocity.y += floatingDelta;
+                    Debug.Log("GOING UP");
+                }
+            }
+            else
+            {
+                _velocity.y += gravity * Time.deltaTime;
+            }
         }
 
         _controller.move(_velocity * Time.deltaTime);
@@ -193,7 +238,7 @@ public class PlayerController2 : MonoBehaviour
         }
 
         // we can only jump whilst grounded
-        if (_controller.isGrounded && playerInput.GetButtonDown("Jump"))
+        if ((_controller.isGrounded || (_isDownInWater && !_isUpInWater)) && playerInput.GetButtonDown("Jump"))
         {
             _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             _animator.Play(Animator.StringToHash("Jump"));
