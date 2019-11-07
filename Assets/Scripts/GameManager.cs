@@ -35,6 +35,11 @@ public class GameManager : Singleton<GameManager>
         FindObjectOfType<VictoryScreenManager>().StartVictoryScreen(winnerId, loosersId);
     }
 
+    public void GameOver()
+    {
+        RestartGame();
+    }
+
     public void StartGame(List<PressStartToJoin.PlayerMap> plyrs)
     {
         Time.timeScale = 1;
