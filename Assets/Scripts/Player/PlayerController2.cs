@@ -214,10 +214,8 @@ public class PlayerController2 : MonoBehaviour
                 _velocity.y += gravity * Time.deltaTime;
             }
         }
-    }
 
-    private void FixedUpdate()
-    {
+
         _controller.move(_velocity * Time.deltaTime);
 
         // grab our current _velocity to use as a base for all calculations
@@ -225,7 +223,6 @@ public class PlayerController2 : MonoBehaviour
 
         UpdateAnimator();
     }
-
 
     public void Jump()
     {
@@ -272,17 +269,6 @@ public class PlayerController2 : MonoBehaviour
         // something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * runSpeed, Time.deltaTime * smoothedMovementFactor);
-
-        // if holding down bump up our movement amount and turn off one way platform detection for a
-        // frame. this lets us jump down through one way platforms
-
-        if (_controller.isGrounded && playerInput.GetAxisRaw("MoveY") < -0.5 && !playerInput.GetButtonDown("Jump"))
-        {
-            _velocity.y -= 3f;
-            _controller.ignoreOneWayPlatformsThisFrame = true;
-        }
-
-
     }
 
     private void UpdateAnimator()
@@ -292,6 +278,5 @@ public class PlayerController2 : MonoBehaviour
         _animator.SetBool("isInWater", _isUpInWater || _isDownInWater);
         _animator.SetBool("isAlive", characterLife_.life_ > 0);
         _animator.SetBool("isHooked", playerState == PlayerState.Hooked);
-
     }
 }

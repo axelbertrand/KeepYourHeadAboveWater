@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TazerRay : MonoBehaviour { 
-    void OnTriggerEnter(Collider2D collider){
+public class TazerRay : MonoBehaviour {
+    
+    void OnTriggerEnter2D(Collider2D collider){
         PlayerController2 player = collider.GetComponent<PlayerController2>();
         if (player)
             StartCoroutine(paralize(player));

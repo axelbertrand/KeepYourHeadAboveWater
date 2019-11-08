@@ -12,13 +12,11 @@ public class Boot : Item {
         source.clip = clip;
         source.PlayOneShot(clip);
 
-        player.runSpeed *= 1.5f;
+        player.runSpeed *= 2f;
 
         GetComponentInChildren<ParticleSystem>().Play();
 
         yield return new WaitForSeconds(4);
-        player.runSpeed /= 1.5f;
-
-        
+        player.runSpeed /= 2f;
     }
 }
