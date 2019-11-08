@@ -678,7 +678,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9703855, y: 0.88944817}
+  m_Size: {x: 1.39, y: 1.22}
   m_EdgeRadius: 0
 --- !u!1 &9087174120233358063
 GameObject:
@@ -843,7 +843,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.04299283, y: -0.03685093}
+  m_Offset: {x: 0.039048195, y: -0.03685093}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -854,7 +854,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4226675, y: 1.0737019}
+  m_Size: {x: 0.61, y: 1.0737019}
   m_EdgeRadius: 0
 --- !u!114 &9087174120255322769
 MonoBehaviour:
@@ -869,7 +869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignoreOneWayPlatformsThisFrame: 0
-  _skinWidth: 0.05
+  _skinWidth: 0.102
   platformMask:
     serializedVersion: 2
     m_Bits: 1
@@ -914,8 +914,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  totalHorizontalRays: 10
-  totalVerticalRays: 7
+  totalHorizontalRays: 20
+  totalVerticalRays: 20
 --- !u!95 &9087174120255322770
 Animator:
   serializedVersion: 3
@@ -956,7 +956,7 @@ MonoBehaviour:
   runSpeed: 8
   groundDamping: 20
   inAirDamping: 5
-  jumpHeight: 3.1
+  jumpHeight: 3.3
   floatingDelta: 1
   waterMask:
     serializedVersion: 2

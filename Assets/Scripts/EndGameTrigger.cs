@@ -21,8 +21,21 @@ public class EndGameTrigger : MonoBehaviour
     [SerializeField]
     private Transform pickUpPoint;
 
+    [SerializeField]
+    private waterBehavior  waterLevel;
 
     private bool isGameOver = false;
+
+    
+    void Update()
+    {
+        GameObject[] gos;
+        gos = GameObject.FindGameObjectsWithTag("Player");
+        if (gos.Length <= 0)
+        {
+            GameManager.Instance.GameOver();
+        }
+    }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -38,7 +51,7 @@ public class EndGameTrigger : MonoBehaviour
             isGameOver = true;
 
             Debug.Log("Un joueur a gagné !");
-
+            waterLevel.setSpeed(0);
 
 
             // Focus the camera on the winner and the helicopter

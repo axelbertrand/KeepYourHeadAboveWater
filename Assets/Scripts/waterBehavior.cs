@@ -18,4 +18,9 @@ public class waterBehavior : MonoBehaviour
     {
         transform.Translate(new Vector3(0f, Time.deltaTime * speed));
     }
+
+    public void setSpeed(float s)
+    {
+        speed = s;
+    }
 }

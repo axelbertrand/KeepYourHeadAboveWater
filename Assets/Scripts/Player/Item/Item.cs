@@ -14,7 +14,7 @@ public abstract class Item : MonoBehaviour{
             return;
         }
 
-        GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+        GetComponentInChildren<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
         locked = true;
         StartCoroutine(UseItem1(player));
     }
